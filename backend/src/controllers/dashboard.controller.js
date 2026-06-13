@@ -6,7 +6,10 @@ exports.getStats = async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-<<<<<<< HEAD
+    const orderWhere = {
+      user: shopId ? { shopId } : undefined
+    };
+
     const [
       totalRevenue,
       todayRevenue,
@@ -16,43 +19,61 @@ exports.getStats = async (req, res) => {
       preparingOrders,
       completedOrders,
       occupiedTables,
-      availableTables
+      availableTables,
+      totalUsers
     ] = await Promise.all([
       // Total Revenue (only paid orders)
       prisma.order.aggregate({
         _sum: { totalAmount: true },
-        where: { paymentStatus: 'PAID' }
+        where: { 
+          paymentStatus: 'PAID',
+          ...orderWhere
+        }
       }),
       // Today's Revenue (only paid orders created today)
       prisma.order.aggregate({
         _sum: { totalAmount: true },
         where: { 
           paymentStatus: 'PAID',
-          createdAt: { gte: today }
+          createdAt: { gte: today },
+          ...orderWhere
         }
       }),
       // Total Paid Orders
       prisma.order.count({
-        where: { paymentStatus: 'PAID' }
+        where: { 
+          paymentStatus: 'PAID',
+          ...orderWhere
+        }
       }),
       // Paid Orders Today
       prisma.order.count({
         where: { 
           paymentStatus: 'PAID',
-          createdAt: { gte: today } 
+          createdAt: { gte: today },
+          ...orderWhere
         }
       }),
       // Kitchen Orders (TO_COOK)
       prisma.kitchenTicket.count({
-        where: { status: 'TO_COOK' }
+        where: { 
+          status: 'TO_COOK',
+          order: orderWhere
+        }
       }),
       // Preparing Orders (PREPARING)
       prisma.kitchenTicket.count({
-        where: { status: 'PREPARING' }
+        where: { 
+          status: 'PREPARING',
+          order: orderWhere
+        }
       }),
       // Completed Orders (COMPLETED but not served yet)
       prisma.kitchenTicket.count({
-        where: { status: 'COMPLETED' }
+        where: { 
+          status: 'COMPLETED',
+          order: orderWhere
+        }
       }),
       // Occupied Tables
       prisma.table.count({
@@ -61,45 +82,24 @@ exports.getStats = async (req, res) => {
       // Available Tables
       prisma.table.count({
         where: { status: 'AVAILABLE' }
+      }),
+      // Total Users
+      prisma.user.count({ 
+        where: { role: 'EMPLOYEE', shopId: shopId || undefined } 
       })
-=======
-    const whereClause = {
-      status: { in: ['PAID', 'COMPLETED'] },
-      user: shopId ? { shopId } : undefined
-    };
-
-    // parallelize queries for performance
-    const [totalRevenue, totalOrders, totalUsers, todayRevenue] = await Promise.all([
-        prisma.order.aggregate({
-            _sum: { totalAmount: true },
-            where: whereClause
-        }),
-        prisma.order.count({ where: whereClause }),
-        prisma.user.count({ where: { role: 'EMPLOYEE', shopId: shopId || undefined } }),
-        prisma.order.aggregate({
-            _sum: { totalAmount: true },
-            where: { 
-                ...whereClause,
-                createdAt: { gte: today }
-            }
-        })
->>>>>>> e229bde4f9c02fb112533b24dd14c4c628fe4d29
     ]);
 
     res.json({
       totalRevenue: Number(totalRevenue._sum.totalAmount) || 0,
       todayRevenue: Number(todayRevenue._sum.totalAmount) || 0,
       totalOrders,
-<<<<<<< HEAD
       ordersToday,
       pendingOrders,
       preparingOrders,
       completedOrders,
       occupiedTables,
-      availableTables
-=======
+      availableTables,
       totalUsers
->>>>>>> e229bde4f9c02fb112533b24dd14c4c628fe4d29
     });
   } catch (error) {
     console.error(error);
