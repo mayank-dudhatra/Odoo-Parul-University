@@ -625,7 +625,7 @@ export default function ProductsPage() {
           </div>
 
           <img
-            src="/hero-coffee.png"
+            src="/products_hero_1781584303220.png"
             alt="Coffee"
             className="absolute -right-16 -bottom-10 h-[130%] object-contain opacity-30 pointer-events-none"
           />

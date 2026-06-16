@@ -190,7 +190,7 @@ export default function CouponsDashboardPage() {
           </div>
 
           <img
-            src="/hero-coffee.png"
+            src="/coupons_hero_1781584354450.png"
             alt="Coffee"
             className="absolute -right-16 -bottom-10 h-[130%] object-contain opacity-30 pointer-events-none"
           />

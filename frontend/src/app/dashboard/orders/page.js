@@ -611,7 +611,7 @@ export default function OrdersPage() {
 
           {/* Decorative coffee image */}
           <img
-            src="/hero-coffee.png"
+            src="/orders_hero_1781584318907.png"
             alt="Coffee"
             className="absolute -right-16 -bottom-10 h-[130%] object-contain opacity-30 pointer-events-none"
           />
@@ -764,8 +764,8 @@ export default function OrdersPage() {
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#EBE4D5]/60 pt-4 text-sm text-[#3E2B21]/50 font-medium">
           <p>
-            Showing <span className="font-bold text-[#3E2B21]">{filteredOrders.length}</span> of
-            <span className="font-bold text-[#3E2B21]"> {orders.length}</span> orders
+            Showing <span className="font-bold text-[#3E2B21]">{orders.length}</span> of
+            <span className="font-bold text-[#3E2B21]"> {totalOrdersCount}</span> orders
           </p>
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F5EFE6] text-[#3E2B21] text-xs font-bold">
             {statusFilter === "all" ? "All orders" : `${getStatusConfig(statusFilter).label} queue`}
@@ -777,7 +777,7 @@ export default function OrdersPage() {
       {/*  ORDERS TABLE                                         */}
       {/* ═══════════════════════════════════════════════════════ */}
       <section className="rounded-[32px] bg-white border border-[#EBE4D5]/60 shadow-[0_4px_20px_rgba(62,43,33,0.02)] overflow-hidden">
-        {filteredOrders.length === 0 ? (
+        {orders.length === 0 ? (
           <div className="text-center py-24 space-y-4">
             <div className="h-16 w-16 rounded-full bg-[#F5EFE6] flex items-center justify-center mx-auto">
               <Coffee className="h-8 w-8 text-[#3E2B21]/30" />
@@ -807,12 +807,12 @@ export default function OrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredOrders.map((order, idx) => {
+                {orders.map((order, idx) => {
                   const statusConfig = getStatusConfig(order.status);
                   return (
                     <tr
                       key={order.id}
-                      className={`transition-colors duration-200 hover:bg-[#FDFCF7] ${idx !== filteredOrders.length - 1 ? "border-b border-[#EBE4D5]/40" : ""
+                      className={`transition-colors duration-200 hover:bg-[#FDFCF7] ${idx !== orders.length - 1 ? "border-b border-[#EBE4D5]/40" : ""
                         }`}
                     >
                       <td className="px-6 py-5">

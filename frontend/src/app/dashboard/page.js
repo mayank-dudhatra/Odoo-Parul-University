@@ -54,7 +54,6 @@ export default function DashboardPage() {
     socket.emit('join', 'admin-room');
 
     const handleOrderCreated = (order) => {
-      console.log("📶 Order created via socket:", order);
       setRecentOrders((prev) => [order, ...prev].slice(0, 5));
       setStats((prev) => {
         if (!prev) return prev;
@@ -69,7 +68,6 @@ export default function DashboardPage() {
     };
 
     const handlePaymentCompleted = (data) => {
-      console.log("📶 Payment completed via socket:", data);
       const { order } = data;
       setRecentOrders((prev) => prev.map(o => o.id === order.id ? { ...o, status: order.status } : o));
       setStats((prev) => {
@@ -86,7 +84,6 @@ export default function DashboardPage() {
     };
 
     const handleKitchenPreparing = (order) => {
-      console.log("📶 Order preparing in kitchen:", order);
       setStats((prev) => {
         if (!prev) return prev;
         return {
@@ -98,7 +95,6 @@ export default function DashboardPage() {
     };
 
     const handleKitchenCompleted = (order) => {
-      console.log("📶 Order completed in kitchen:", order);
       setStats((prev) => {
         if (!prev) return prev;
         return {
@@ -110,7 +106,6 @@ export default function DashboardPage() {
     };
 
     const handleTableStatusChanged = (data) => {
-      console.log("📶 Table status changed via socket:", data);
       setStats((prev) => {
         if (!prev) return prev;
         const isOccupied = data.status === 'OCCUPIED';
@@ -124,7 +119,6 @@ export default function DashboardPage() {
     };
 
     const handleGenericUpdate = () => {
-      console.log("📶 Generic dashboard update trigger");
       setRefreshKey((prev) => prev + 1);
     };
 
@@ -239,29 +233,21 @@ export default function DashboardPage() {
     { label: "Year", value: "year" },
   ];
 
-  // Static data removed - now using dynamic data from API
-
-  /* ✅ Service Score */
-  const serviceScore = useMemo(() => {
-    if (!stats?.totalOrders) return 75;
-    return Math.min(100, Math.max(70, stats.totalOrders % 100));
-  }, [stats]);
-
   /* ✅ Date */
   const today = useMemo(
     () =>
       new Intl.DateTimeFormat("en-US", {
         weekday: "long",
-        day: "numeric",
         month: "long",
+        day: "numeric",
       }).format(new Date()),
     []
   );
 
   const chartData = salesTrends.length > 0 ? salesTrends : [];
   const radarData = topProducts.length > 0 ? topProducts : [];
-  const openOrders = stats?.totalOrders || recentOrders.length;
-  const activeStaff = stats?.totalUsers || 12;
+  const openOrders = stats?.totalOrders || recentOrders.length || 0;
+  const activeStaff = stats?.totalUsers || 1;
 
   /* ✅ Loading Spinner */
   if (loading) {
@@ -273,34 +259,36 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-10">
-      {/* ✅ HERO */}
-      <section className="flex flex-col xl:flex-row gap-6">
-        {/* Left Block: Hero Text & Image */}
-        <div className="relative flex-1 bg-[#FDFCF7] rounded-[40px] p-8 lg:p-12 shadow-[0_4px_20px_rgba(62,43,33,0.02)] border border-[#EBE4D5]/60 overflow-hidden flex flex-col justify-center">
-          <div className="relative z-10 max-w-xl space-y-8">
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#FCF8F2] text-coffee-dark text-sm font-semibold border border-[#EBE4D5]">
-              👋 Welcome back to Odoo Cafe
+    <div className="space-y-6">
+      {/* ✅ HERO SECTION */}
+      <section className="flex flex-col lg:flex-row gap-6">
+        
+        {/* LEFT: Hero Banner */}
+        <div className="relative flex-1 bg-[#FDFCF7] rounded-[32px] p-10 shadow-[0_2px_15px_rgba(0,0,0,0.02)] border border-[#F0EBE1] overflow-hidden flex flex-col justify-between min-h-[340px]">
+          <div className="relative z-10 max-w-lg space-y-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-transparent text-[#3E2B21] text-sm font-bold border border-[#EBE4D5]">
+              <span className="text-base">👋</span> Welcome back to Odoo Cafe
             </div>
 
             <div>
-              <h1 className="text-4xl lg:text-[52px] font-black leading-[1.15] text-coffee-dark font-serif tracking-tight">
-                Brewing insights for today&apos;s service.
+              <h1 className="text-5xl font-black leading-[1.1] text-[#3E2B21] font-serif tracking-tight">
+                Brewing insights for today's service.
               </h1>
-              <p className="text-coffee-dark/70 text-lg mt-4 font-medium leading-relaxed max-w-md">
+              <p className="text-[#8C8775] text-base mt-4 font-bold leading-relaxed max-w-sm">
                 Track revenue, monitor orders, and keep your baristas aligned with a single glance.
               </p>
             </div>
 
-            <div className="inline-flex gap-2 bg-[#FCF9F2] rounded-full p-1.5 border border-[#EBE4D5]/60">
+            <div className="inline-flex items-center gap-1 bg-[#FDFCF7] rounded-full border border-[#F0EBE1] mt-4 p-1 shadow-sm">
               {timeframeOptions.map((option) => (
                 <button
                   key={option.value}
                   onClick={() => setActiveRange(option.value)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${activeRange === option.value
-                    ? "bg-coffee-dark text-white shadow-md"
-                    : "text-coffee-dark/70 hover:bg-white"
-                    }`}
+                  className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
+                    activeRange === option.value
+                      ? "bg-[#3E2B21] text-white shadow-md"
+                      : "text-[#8C8775] hover:text-[#3E2B21]"
+                  }`}
                 >
                   {option.label}
                 </button>
@@ -311,56 +299,60 @@ export default function DashboardPage() {
           <img 
             src="/hero-coffee.png" 
             alt="Coffee Cups" 
-            className="absolute -right-10 bottom-0 h-[110%] object-contain"
+            className="absolute -right-8 bottom-0 h-[115%] object-contain pointer-events-none opacity-60 mix-blend-multiply"
           />
         </div>
 
-        {/* Right Block: Stats & Actions */}
-        <div className="w-full xl:w-[380px] flex flex-col gap-4">
-          <div className="bg-transparent flex flex-col gap-5 h-full">
-            <div className="bg-[#FDFCF7] rounded-[32px] p-6 shadow-[0_4px_20px_rgba(62,43,33,0.02)] border border-[#EBE4D5]/60 flex items-center justify-between text-sm text-coffee-dark font-semibold">
-              <div className="flex items-center gap-3">
-                <CalendarDays className="h-5 w-5 text-coffee-dark/70" />
-                <span>{today}</span>
-              </div>
-              <button className="h-10 w-10 rounded-full border border-[#EBE4D5] flex items-center justify-center text-coffee-dark bg-white hover:bg-beige-50 shadow-sm transition-all">
-                <Bell className="h-5 w-5" />
-              </button>
+        {/* RIGHT: Quick Actions & Overview Cards */}
+        <div className="w-full lg:w-[420px] flex flex-col gap-6">
+          
+          {/* Top Row: Date & Notification */}
+          <div className="flex gap-4">
+            <div className="flex-1 bg-white rounded-full px-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EBE1] flex items-center gap-3 text-sm text-[#3E2B21] font-bold h-14">
+              <CalendarDays className="h-[18px] w-[18px] text-[#8C8775]" />
+              <span>{today}</span>
             </div>
+            <button className="h-14 w-14 rounded-full border border-[#F0EBE1] flex items-center justify-center text-[#3E2B21] bg-white hover:bg-[#FDFCF7] shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all shrink-0">
+              <Bell className="h-[20px] w-[20px]" />
+            </button>
+          </div>
 
-            <div className="relative">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-coffee-dark/40" />
-              <input
-                placeholder="Search drink, table, barista..."
-                className="w-full rounded-[24px] bg-white border border-[#EBE4D5] px-14 py-4 text-sm font-medium text-coffee-dark placeholder:text-coffee-dark/40 focus:outline-none focus:border-coffee-dark/20 focus:ring-2 focus:ring-coffee-dark/10 shadow-[0_4px_20px_rgba(62,43,33,0.02)]"
-              />
-            </div>
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-[#A8A396]" />
+            <input
+              placeholder="Search drink, table, barista..."
+              className="w-full h-14 rounded-full bg-white border border-[#F0EBE1] pl-14 pr-6 text-sm font-bold text-[#3E2B21] placeholder:text-[#A8A396] focus:outline-none focus:border-[#EBE4D5] focus:ring-4 focus:ring-[#FDFCF7] shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-all"
+            />
+          </div>
 
-            <div className="grid grid-cols-2 gap-4 flex-1">
-              <div className="rounded-[28px] bg-white border border-[#EBE4D5] p-6 shadow-[0_4px_20px_rgba(62,43,33,0.02)] flex flex-col justify-center">
-                <p className="text-coffee-dark/60 text-[13px] font-bold tracking-wide">Open Orders</p>
-                <div className="flex items-end justify-between mt-3">
-                  <p className="text-[32px] font-black text-coffee-dark leading-none">{openOrders}</p>
-                  <div className="h-10 w-10 rounded-full bg-[#FCF8F2] flex items-center justify-center text-coffee-dark/60 border border-[#EBE4D5]/60">
-                    <ShoppingBag className="h-5 w-5" />
-                  </div>
+          {/* Bottom Row: Tall Cards */}
+          <div className="grid grid-cols-2 gap-5 flex-1 min-h-[160px]">
+            <div className="rounded-[32px] bg-white border border-[#F0EBE1] p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+              <p className="text-[#8C8775] text-sm font-bold">Open Orders</p>
+              <div className="flex items-end justify-between mt-auto">
+                <p className="text-[40px] font-black text-[#3E2B21] leading-none">{openOrders}</p>
+                <div className="h-[46px] w-[46px] rounded-full bg-[#FDFCF7] flex items-center justify-center text-[#A8A396] border border-[#F0EBE1]">
+                  <ShoppingBag className="h-[22px] w-[22px]" />
                 </div>
               </div>
-              <div className="rounded-[28px] bg-white border border-[#EBE4D5] p-6 shadow-[0_4px_20px_rgba(62,43,33,0.02)] flex flex-col justify-center">
-                <p className="text-coffee-dark/60 text-[13px] font-bold tracking-wide">Active Staff</p>
-                <div className="flex items-end justify-between mt-3">
-                  <p className="text-[32px] font-black text-coffee-dark leading-none">{activeStaff}</p>
-                  <div className="h-10 w-10 rounded-full bg-[#FCF8F2] flex items-center justify-center text-coffee-dark/60 border border-[#EBE4D5]/60">
-                    <Users className="h-5 w-5" />
-                  </div>
+            </div>
+            
+            <div className="rounded-[32px] bg-white border border-[#F0EBE1] p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+              <p className="text-[#8C8775] text-sm font-bold">Active Staff</p>
+              <div className="flex items-end justify-between mt-auto">
+                <p className="text-[40px] font-black text-[#3E2B21] leading-none">{activeStaff}</p>
+                <div className="h-[46px] w-[46px] rounded-full bg-[#FDFCF7] flex items-center justify-center text-[#A8A396] border border-[#F0EBE1]">
+                  <Users className="h-[22px] w-[22px]" />
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
-      {/* ✅ STATS */}
+      {/* ✅ STATS GRID */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard title="Total Revenue" value={`₹${stats?.totalRevenue || 0}`} icon={DollarSign} />
         <StatsCard 
@@ -384,241 +376,190 @@ export default function DashboardPage() {
         <StatsCard title="Available Tables" value={stats?.availableTables || 0} icon={Coffee} />
       </section>
 
-      {/* ✅ CHARTS GRID */}
-      <section className="grid xl:grid-cols-3 gap-6">
-        {/* Charts */}
-        <div className="xl:col-span-2 space-y-6">
-          {/* Line Chart */}
-          <div className="rounded-3xl bg-white p-6 shadow-lg border border-[#F1EEDB]">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-[#1A4D2E]">Revenue by Category</h3>
-              <TrendingUp className="h-5 w-5 text-[#1A4D2E]/40" />
-            </div>
-
-            {chartsLoading ? (
-              <div className="flex items-center justify-center h-[280px]">
-                <CoffeeLoader size="sm" text="" />
-              </div>
-            ) : chartData.length > 0 ? (
-              <LineChart
-                height={280}
-                xAxis={[
-                  { scaleType: "point", data: chartData.map((d) => d.slot) },
-                ]}
-                series={
-                  categories.length > 0
-                    ? categories.map((cat, idx) => {
-                        const key = cat.toLowerCase().replace(/\s+/g, '');
-                        const colors = ['#1A4D2E', '#F4A460', '#4ADE80', '#8B5CF6', '#F59E0B'];
-                        return {
-                          data: chartData.map((d) => d[key] || 0),
-                          label: cat,
-                          color: colors[idx % colors.length],
-                          curve: "linear",
-                        };
-                      })
-                    : [
-                        { data: chartData.map((d) => d.beverages || 0), label: "Beverages", color: "#1A4D2E" },
-                        { data: chartData.map((d) => d.food || 0), label: "Food", color: "#F4A460" },
-                        { data: chartData.map((d) => d.desserts || 0), label: "Desserts", color: "#4ADE80" },
-                      ]
-                }
-                margin={{ left: 60, right: 20, top: 40, bottom: 40 }}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center h-[280px] text-gray-400 bg-[#FDFCF7] rounded-2xl border-2 border-dashed border-[#F1EEDB]">
-                <p>No historical data available</p>
-              </div>
-            )}
+      {/* ✅ CHARTS & ACTIVITY */}
+      <section className="space-y-6">
+        {/* Line Chart */}
+        <div className="rounded-[32px] bg-white p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EBE1]">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-[#3E2B21] text-xl">Revenue by Category</h3>
+            <TrendingUp className="h-5 w-5 text-[#8C8775]" />
           </div>
 
+          {chartsLoading ? (
+            <div className="flex items-center justify-center h-[280px]">
+              <CoffeeLoader size="sm" text="" />
+            </div>
+          ) : chartData.length > 0 ? (
+            <LineChart
+              height={280}
+              xAxis={[
+                { scaleType: "point", data: chartData.map((d) => d.slot) },
+              ]}
+              series={
+                categories.length > 0
+                  ? categories.map((cat, idx) => {
+                      const key = cat.toLowerCase().replace(/\s+/g, '');
+                      const colors = ['#1A4D2E', '#F4A460', '#4ADE80', '#8B5CF6', '#F59E0B'];
+                      return {
+                        data: chartData.map((d) => d[key] || 0),
+                        label: cat,
+                        color: colors[idx % colors.length],
+                        curve: "linear",
+                      };
+                    })
+                  : [
+                      { data: chartData.map((d) => d.beverages || 0), label: "Beverages", color: "#1A4D2E" },
+                      { data: chartData.map((d) => d.food || 0), label: "Food", color: "#F4A460" },
+                      { data: chartData.map((d) => d.desserts || 0), label: "Desserts", color: "#4ADE80" },
+                    ]
+              }
+              margin={{ left: 60, right: 20, top: 40, bottom: 40 }}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-[280px] text-[#A8A396] bg-[#FDFCF7] rounded-[24px] border border-dashed border-[#F0EBE1]">
+              <p className="font-bold">No historical data available</p>
+            </div>
+          )}
+        </div>
+
+        {/* Top Selling & Heatmap Grid */}
+        <div className="grid xl:grid-cols-2 gap-6">
           {/* Top Selling Products List */}
-          <div className="rounded-[32px] bg-white p-8 shadow-lg border border-[#F1EEDB]">
+          <div className="rounded-[32px] bg-white p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EBE1] flex flex-col">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className="text-2xl font-bold text-[#1A4D2E]">Top Selling Products</h3>
-                <p className="text-gray-500 text-sm mt-1">Your most popular items by volume.</p>
+                <h3 className="text-xl font-bold text-[#3E2B21]">Top Selling Products</h3>
+                <p className="text-[#8C8775] text-sm mt-1 font-medium">Your most popular items by volume.</p>
               </div>
               <Sparkles className="h-6 w-6 text-[#1A4D2E]" />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-8 flex-1">
               <div className="space-y-4">
                 {chartsLoading ? (
                    Array(5).fill(0).map((_, i) => (
-                    <div key={i} className="h-16 w-full bg-gray-50 animate-pulse rounded-2xl" />
+                    <div key={i} className="h-16 w-full bg-[#FDFCF7] animate-pulse rounded-[16px]" />
                    ))
-                ) : radarData.length > 0 ? (
-                  radarData.map((product, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-[#FDFCF7] border border-[#F1EEDB] hover:border-[#1A4D2E]/20 transition-colors group">
-                      <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 rounded-xl bg-white border border-[#F1EEDB] flex items-center justify-center font-bold text-[#1A4D2E] shadow-sm group-hover:bg-[#1A4D2E] group-hover:text-white transition-colors">
-                          {idx + 1}
-                        </div>
-                        <div>
-                          <p className="font-bold text-[#1A4D2E]">{product.item}</p>
-                          <p className="text-xs text-gray-500">{product.orders} total sales</p>
-                        </div>
+                ) : topProducts.length > 0 ? (
+                  topProducts.map((product, idx) => (
+                    <div key={idx} className="flex items-center gap-4 bg-[#FDFCF7] p-3 rounded-[16px] border border-[#F0EBE1]">
+                      <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center font-bold text-[#3E2B21] border border-[#EBE4D5]">
+                        #{idx + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-[#3E2B21] text-sm">{product.name}</p>
+                        <p className="text-xs text-[#8C8775] font-medium">{product.category}</p>
                       </div>
                       <div className="text-right">
-                        <div className="h-2 w-24 bg-gray-100 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-[#1A4D2E]" 
-                            style={{ width: `${(product.orders / radarData[0].orders) * 100}%` }}
-                          />
-                        </div>
+                        <p className="font-black text-[#1A4D2E] text-sm">{product.sold}</p>
+                        <p className="text-[10px] text-[#8C8775] font-medium">sold</p>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p className="text-center py-10 text-gray-400 italic">No product data yet</p>
+                  <p className="text-sm text-[#8C8775] font-bold">No products sold yet.</p>
                 )}
               </div>
 
-              <div className="flex items-center justify-center">
+              {/* Radar Chart for Top Products Categories */}
+              <div className="flex items-center justify-center bg-[#FDFCF7] rounded-[24px] p-4 border border-[#F0EBE1] h-full min-h-[250px]">
                 {chartsLoading ? (
                   <CoffeeLoader size="sm" />
                 ) : radarData.length > 0 ? (
                   <PieChart
                     series={[
                       {
-                        data: radarData.map((d, i) => ({
+                        data: radarData.slice(0, 5).map((p, i) => ({
                           id: i,
-                          value: d.orders,
-                          label: d.item,
-                          color: ['#1A4D2E', '#2F7A46', '#4ADE80', '#F4A460', '#FDBA74', '#8C8775'][i % 6]
+                          value: p.sold,
+                          label: p.name,
                         })),
-                        innerRadius: 60,
+                        innerRadius: 30,
                         outerRadius: 100,
                         paddingAngle: 5,
-                        cornerRadius: 8,
+                        cornerRadius: 5,
                       },
                     ]}
                     height={250}
-                    legend={{ hidden: true }}
                   />
-                ) : null}
+                ) : (
+                  <div className="text-center">
+                    <PieChart
+                      series={[
+                        {
+                          data: [
+                            { id: 0, value: 30, label: "Coffee", color: "#1A4D2E" },
+                            { id: 1, value: 20, label: "Tea", color: "#F4A460" },
+                            { id: 2, value: 15, label: "Snacks", color: "#4ADE80" },
+                          ],
+                          innerRadius: 30,
+                          outerRadius: 100,
+                          paddingAngle: 5,
+                          cornerRadius: 5,
+                        },
+                      ]}
+                      height={250}
+                    />
+                    <p className="text-xs text-[#8C8775] mt-2 font-bold italic">Sample Data</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* ✅ Right Panel */}
-        <div className="flex flex-col gap-6">
-          {/* ✅ Heatmap */}
-          <div className="rounded-3xl bg-white p-6 shadow-lg border border-[#F1EEDB]">
-            <h3 className="font-bold text-[#1A4D2E] mb-4">
-              Hourly Activity Heatmap
-            </h3>
-
-            <div style={{ height: 280 }}>
-              {chartsLoading ? (
-                <div className="flex items-center justify-center h-full">
-                  <CoffeeLoader size="sm" text="" />
-                </div>
-              ) : heatmapData.length > 0 ? (
+          {/* Activity Heatmap */}
+          <div className="rounded-[32px] bg-white p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EBE1] flex flex-col">
+            <h3 className="font-bold text-[#3E2B21] mb-2 text-xl">Busy Hours</h3>
+            <p className="text-[#8C8775] text-sm mb-6 font-medium">Heatmap of order volume by time of day.</p>
+            {chartsLoading ? (
+              <div className="flex-1 flex items-center justify-center min-h-[280px]">
+                <CoffeeLoader size="sm" text="" />
+              </div>
+            ) : heatmapData.length > 0 ? (
+              <div className="flex-1 min-h-[280px]">
                 <ResponsiveHeatMap
                   data={heatmapData}
-                  margin={{ top: 20, right: 10, bottom: 60, left: 50 }}
+                  margin={{ top: 20, right: 10, bottom: 20, left: 40 }}
+                  valueFormat=">-.0f"
                   axisTop={null}
                   axisRight={null}
                   axisBottom={{
                     tickSize: 5,
                     tickPadding: 5,
-                    tickRotation: -45,
-                    legend: 'Hour of Day',
+                    tickRotation: 0,
                     legendPosition: 'middle',
-                    legendOffset: 45
+                    legendOffset: 46
                   }}
-                  colors={{ type: "sequential", scheme: "greens" }}
-                  enableLabels={false}
-                  opacity={0.9}
+                  axisLeft={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                  }}
+                  colors={{
+                    type: 'sequential',
+                    scheme: 'greens',
+                    minValue: 0,
+                    maxValue: 50
+                  }}
                   emptyColor="#FDFCF7"
+                  borderColor="#ffffff"
+                  borderWidth={2}
+                  enableLabels={false}
                 />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-gray-400 bg-[#FDFCF7] rounded-2xl border-2 border-dashed border-[#F1EEDB]">
-                  <Clock className="h-8 w-8 mb-2 opacity-20" />
-                  <p className="text-sm">No activity data yet</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* ✅ Service Score */}
-          <div className="rounded-3xl bg-gradient-to-br from-[#FDFBF4] to-[#F1EEDB] p-6 shadow-lg">
-            <h3 className="font-bold text-[#1A4D2E] mb-4">
-              Customer Delight Index
-            </h3>
-
-            <div
-              className="h-36 w-36 mx-auto rounded-full flex items-center justify-center"
-              style={{
-                background: `conic-gradient(#1A4D2E ${(serviceScore / 100) * 360
-                  }deg, #DADCCB ${(serviceScore / 100) * 360}deg)`,
-              }}
-            >
-              <div className="h-24 w-24 bg-white rounded-full flex flex-col items-center justify-center shadow">
-                <p className="text-3xl font-black text-[#1A4D2E]">
-                  {serviceScore}
-                </p>
-                <p className="text-xs text-gray-500 uppercase tracking-widest">
-                  Score
-                </p>
               </div>
-            </div>
+            ) : (
+               <div className="flex-1 flex flex-col items-center justify-center min-h-[280px] text-[#A8A396] bg-[#FDFCF7] rounded-[24px] border border-dashed border-[#F0EBE1]">
+                  <p className="font-bold">Not enough data for heatmap</p>
+               </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* ✅ EMPLOYEE PERFORMANCE */}
-      <section className="grid grid-cols-1 gap-6">
-        <div className="rounded-[32px] bg-white p-8 shadow-lg border border-[#F1EEDB]">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h3 className="text-2xl font-bold text-[#1A4D2E]">Employee Sales Performance</h3>
-              <p className="text-gray-500 text-sm mt-1">Real-time revenue contribution by your barista team.</p>
-            </div>
-            <div className="h-12 w-12 rounded-2xl bg-[#FDFBF4] flex items-center justify-center text-[#1A4D2E]">
-              <Users className="h-6 w-6" />
-            </div>
-          </div>
-
-          {chartsLoading ? (
-            <div className="flex items-center justify-center h-[350px]">
-              <CoffeeLoader size="md" text="Calculating performance..." />
-            </div>
-          ) : employeePerformance.length > 0 ? (
-            <BarChart
-              height={350}
-              xAxis={[
-                {
-                  scaleType: "band",
-                  data: employeePerformance.map((d) => d.name),
-                  label: "Barista Name",
-                },
-              ]}
-              series={[
-                {
-                  data: employeePerformance.map((d) => d.sales),
-                  label: "Total Sales (₹)",
-                  color: "#1A4D2E",
-                  valueFormatter: (value) => `₹${value.toLocaleString()}`,
-                },
-              ]}
-              borderRadius={12}
-              margin={{ top: 20, right: 20, bottom: 50, left: 60 }}
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-[300px] text-gray-400 bg-[#FDFCF7] rounded-3xl border-2 border-dashed border-[#F1EEDB]">
-              <ShoppingBag className="h-10 w-10 mb-3 opacity-20" />
-              <p className="font-medium">No sales data recorded for this period</p>
-            </div>
-          )}
-        </div>
+      {/* ✅ FULL WIDTH RECENT ORDERS */}
+      <section className="w-full">
+        <RecentOrders orders={recentOrders} loading={loading} />
       </section>
-
-      {/* Orders Table */}
-      <RecentOrders orders={recentOrders} />
     </div>
   );
 }

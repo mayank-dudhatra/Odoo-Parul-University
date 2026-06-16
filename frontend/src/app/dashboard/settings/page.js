@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings as SettingsIcon, Users, Monitor, CreditCard, List, Save, Plus, Trash2, Edit2, X, Check, MapPin } from "lucide-react";
+import { Settings as SettingsIcon, Users, Monitor, CreditCard, List, Save, Plus, Trash2, Edit2, X, Check, MapPin, Coffee } from "lucide-react";
 import CoffeeLoader from "@/components/ui/CoffeeLoader";
 import { usePopup } from "@/context/PopupContext";
 
@@ -378,45 +378,62 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-8 pb-20">
-      {/* Header */}
-      <section className="relative overflow-hidden rounded-[24px] bg-gradient-to-r from-[#0F291C] via-[#175236] to-[#1F5D3E] text-white p-8 shadow-[0_16px_48px_rgba(10,46,29,0.30)] border border-white/10">
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*  HERO HEADER                                          */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <section className="relative bg-[#FDFCF7] rounded-[40px] p-8 lg:p-12 shadow-[0_4px_20px_rgba(62,43,33,0.02)] border border-[#EBE4D5]/60 overflow-hidden">
         <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-2 max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.3em] text-white/60">Odoo Cafe · Settings</p>
-            <h2 className="text-3xl font-extrabold leading-tight">Cafe Settings</h2>
-            <p className="text-white/70 text-base">Manage everything about your cafe — from branding to billing.</p>
+          <div className="space-y-3 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#FCF8F2] text-[#3E2B21] text-sm font-semibold border border-[#EBE4D5]">
+              <SettingsIcon className="h-4 w-4" /> Cafe Settings
+            </div>
+            <h1 className="text-3xl lg:text-[44px] font-black leading-[1.15] text-[#3E2B21] font-serif tracking-tight">
+              Configure your cafe
+            </h1>
+            <p className="text-[#3E2B21]/60 text-base font-medium leading-relaxed max-w-md">
+              Manage everything — from branding to billing, team to tables.
+            </p>
           </div>
           {(activeTab === "general" || activeTab === "payments") && (
             <button
               onClick={handleSaveSettings}
               disabled={saving}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white text-[#1A4D2E] font-semibold shadow-[0_20px_45px_rgba(0,0,0,0.2)] hover:bg-gray-100 transition-colors"
+              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-[18px] bg-[#3E2B21] text-white font-bold text-sm shadow-[0_4px_12px_rgba(62,43,33,0.2)] hover:bg-[#2C1810] transition-colors disabled:opacity-50"
             >
-              <Save className="h-5 w-5" /> {saving ? "Saving..." : "Save Changes"}
+              <Save className="h-4.5 w-4.5" /> {saving ? "Saving..." : "Save Changes"}
             </button>
           )}
         </div>
+        <img
+          src="/settings_hero_1781584343346.png"
+          alt="Coffee"
+          className="absolute -right-16 -bottom-10 h-[130%] object-contain opacity-20 pointer-events-none"
+        />
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/*  SIDEBAR TABS                                         */}
+        {/* ═══════════════════════════════════════════════════════ */}
         <div className="lg:col-span-1">
-          <div className="rounded-[24px] bg-white border border-[#e8e5d8] shadow-sm p-2.5 space-y-1">
+          <div className="rounded-[28px] bg-white border border-[#EBE4D5]/60 shadow-[0_4px_20px_rgba(62,43,33,0.02)] p-3 space-y-1.5">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all ${isActive ? "bg-[#1A4D2E] text-white shadow-md" : "text-[#1A4D2E] hover:bg-[#f5f3ea]"
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-[20px] text-left transition-all duration-200 ${isActive
+                    ? "bg-[#3E2B21] text-white shadow-[0_4px_12px_rgba(62,43,33,0.2)]"
+                    : "text-[#3E2B21] hover:bg-[#F5EFE6]"
                     }`}
                 >
-                  <span className={`h-9 w-9 rounded-xl flex items-center justify-center flex-shrink-0 ${isActive ? "bg-white/15" : "bg-[#f5f3ea] border border-[#e8e5d8]"}`}>
+                  <span className={`h-9 w-9 rounded-[14px] flex items-center justify-center flex-shrink-0 ${isActive ? "bg-white/15" : "bg-[#F5EFE6] border border-[#EBE4D5]"}`}>
                     <tab.icon className="h-4 w-4" />
                   </span>
                   <div className="min-w-0">
-                    <p className={`text-sm font-semibold leading-tight ${isActive ? "text-white" : "text-[#1A4D2E]"}`}>{tab.label}</p>
-                    <p className={`text-[10px] leading-tight mt-0.5 ${isActive ? "text-white/60" : "text-[#8a8778]"}`}>{tab.desc}</p>
+                    <p className={`text-sm font-bold leading-tight ${isActive ? "text-white" : "text-[#3E2B21]"}`}>{tab.label}</p>
+                    <p className={`text-[10px] leading-tight mt-0.5 ${isActive ? "text-white/60" : "text-[#3E2B21]/40"}`}>{tab.desc}</p>
                   </div>
                   {isActive && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-white flex-shrink-0" />}
                 </button>
@@ -425,69 +442,56 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Content */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/*  CONTENT                                              */}
+        {/* ═══════════════════════════════════════════════════════ */}
         <div className="lg:col-span-3">
-          <div className="rounded-[24px] bg-white border border-[#e8e5d8] shadow-sm p-6 lg:p-8">
+          <div className="rounded-[28px] bg-white border border-[#EBE4D5]/60 shadow-[0_4px_20px_rgba(62,43,33,0.02)] p-6 lg:p-8">
 
             {/* General */}
             {activeTab === "general" && (
-              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center gap-4 border-b border-[#F3EEE2] pb-6">
-                  <div className="h-14 w-14 rounded-2xl bg-[#F7F4EB] flex items-center justify-center border border-[#E4E0D1] shadow-sm">
-                    <SettingsIcon className="h-7 w-7 text-[#1A4D2E]" />
+              <div className="space-y-8">
+                <div className="flex items-center gap-4 border-b border-[#EBE4D5]/60 pb-6">
+                  <div className="h-12 w-12 rounded-[18px] bg-[#F3EDE5] flex items-center justify-center">
+                    <SettingsIcon className="h-6 w-6 text-[#6B4423]" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-[#1A4D2E]">Cafe Details</h3>
-                    <p className="text-[#5F6F65] text-sm">Your cafe's name, currency, and what appears on receipts.</p>
+                    <h3 className="text-lg font-black text-[#3E2B21]">Cafe Details</h3>
+                    <p className="text-[#3E2B21]/40 text-sm font-medium">Your cafe's name, currency, and receipt info.</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-6">
-                    <div className="group">
-                      <label className="flex items-center gap-2 text-sm font-bold text-[#1A4D2E] mb-2 group-focus-within:text-[#175236] transition-colors">
-                        <Monitor className="h-4 w-4" />
-                        Cafe Name
-                      </label>
-                      <input 
-                        className="w-full px-5 py-4 rounded-[20px] border-2 border-[#EFE8D8] bg-[#FDFCF7] focus:border-[#1A4D2E] focus:bg-white focus:outline-none transition-all shadow-sm placeholder-[#A39E8D]"
+                    <div>
+                      <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Cafe Name</label>
+                      <input
+                        className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-sm font-medium text-[#3E2B21]"
                         placeholder="e.g. Odoo Cafe"
-                        value={settings.cafeName || ""} 
-                        onChange={e => setSettings({ ...settings, cafeName: e.target.value })} 
+                        value={settings.cafeName || ""}
+                        onChange={e => setSettings({ ...settings, cafeName: e.target.value })}
                       />
-                      <p className="mt-2 text-[11px] text-[#8C8775] px-1 font-medium italic">This name will appear on your dashboard and customer receipts.</p>
                     </div>
-
-                    <div className="group">
-                      <label className="flex items-center gap-2 text-sm font-bold text-[#1A4D2E] mb-2">
-                        <span className="text-lg">₹</span>
-                        Currency Symbol
-                      </label>
-                      <input 
-                        className="w-32 px-5 py-4 rounded-[20px] border-2 border-[#EFE8D8] bg-[#FDFCF7] focus:border-[#1A4D2E] focus:bg-white focus:outline-none transition-all shadow-sm text-center font-bold text-lg"
+                    <div>
+                      <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Currency Symbol</label>
+                      <input
+                        className="w-32 px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-center font-black text-lg text-[#3E2B21]"
                         placeholder="₹"
-                        value={settings.currency || ""} 
-                        onChange={e => setSettings({ ...settings, currency: e.target.value })} 
+                        value={settings.currency || ""}
+                        onChange={e => setSettings({ ...settings, currency: e.target.value })}
                       />
                     </div>
                   </div>
-
-                  <div className="group">
-                    <label className="flex items-center gap-2 text-sm font-bold text-[#1A4D2E] mb-2">
-                      <List className="h-4 w-4" />
-                      Receipt Footer Message
-                    </label>
-                    <textarea 
-                      className="w-full px-5 py-4 rounded-[24px] border-2 border-[#EFE8D8] bg-[#FDFCF7] focus:border-[#1A4D2E] focus:bg-white focus:outline-none transition-all shadow-sm min-h-[160px] resize-none"
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Receipt Footer</label>
+                    <textarea
+                      className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-sm font-medium text-[#3E2B21] min-h-[160px] resize-none"
                       placeholder="e.g. Thank you for visiting! Please visit again."
-                      rows={5} 
-                      value={settings.receiptFooter || ""} 
-                      onChange={e => setSettings({ ...settings, receiptFooter: e.target.value })} 
+                      rows={5}
+                      value={settings.receiptFooter || ""}
+                      onChange={e => setSettings({ ...settings, receiptFooter: e.target.value })}
                     />
-                    <div className="flex justify-between mt-2 px-1">
-                      <p className="text-[11px] text-[#8C8775] font-medium italic">A personal note for your customers at the end of their bill.</p>
-                      <p className="text-[10px] font-bold text-[#1A4D2E]/40 uppercase tracking-widest">{settings.receiptFooter?.length || 0}/200</p>
-                    </div>
+                    <p className="text-[11px] text-[#3E2B21]/30 mt-2 font-medium">{settings.receiptFooter?.length || 0}/200 characters</p>
                   </div>
                 </div>
               </div>
@@ -497,28 +501,37 @@ export default function SettingsPage() {
             {activeTab === "users" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-[#1A4D2E]">Your Team</h3>
-                  <button onClick={() => { setEditingUser(null); setShowUserModal(true); }} className="btn-primary-sm"><Plus className="h-4 w-4" /> Add Staff</button>
+                  <h3 className="text-lg font-black text-[#3E2B21]">Your Team</h3>
+                  <button onClick={() => { setEditingUser(null); setShowUserModal(true); }} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[16px] bg-[#3E2B21] text-white font-bold text-sm hover:bg-[#2C1810] transition-colors shadow-[0_4px_12px_rgba(62,43,33,0.15)]">
+                    <Plus className="h-4 w-4" /> Add Staff
+                  </button>
                 </div>
-                <div className="overflow-hidden rounded-2xl border border-gray-100">
-                  <table className="w-full text-left">
-                    <thead className="bg-gray-50 text-xs uppercase text-gray-500 font-bold">
-                      <tr>
-                        <th className="p-4">Name</th>
-                        <th className="p-4">Email</th>
-                        <th className="p-4">Role</th>
-                        <th className="p-4 text-right">Actions</th>
+                <div className="overflow-hidden rounded-[20px] border border-[#EBE4D5]/60">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-[#FDFCF7] border-b border-[#EBE4D5]/60">
+                        {["Name", "Email", "Role", ""].map(h => (
+                          <th key={h} className="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-[#3E2B21]/40">{h}</th>
+                        ))}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {users.map(u => (
-                        <tr key={u.id} className="hover:bg-gray-50">
-                          <td className="p-4 font-semibold text-coffee-800">{u.name}</td>
-                          <td className="p-4 text-gray-500">{u.email}</td>
-                          <td className="p-4"><span className="badge">{u.role}</span></td>
-                          <td className="p-4 text-right flex justify-end gap-2">
-                            <button onClick={() => { setEditingUser(u); setShowUserModal(true); }} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"><Edit2 className="h-4 w-4" /></button>
-                            <button onClick={() => handleDeleteUser(u.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 className="h-4 w-4" /></button>
+                    <tbody>
+                      {users.map((u, idx) => (
+                        <tr key={u.id} className={`hover:bg-[#FDFCF7] transition-colors ${idx !== users.length - 1 ? "border-b border-[#EBE4D5]/40" : ""}`}>
+                          <td className="px-6 py-4 font-bold text-[#3E2B21] text-sm">{u.name}</td>
+                          <td className="px-6 py-4 text-sm text-[#3E2B21]/60 font-medium">{u.email}</td>
+                          <td className="px-6 py-4">
+                            <span className="px-3 py-1.5 rounded-full text-[11px] font-bold bg-[#F5EFE6] text-[#3E2B21]/60 border border-[#EBE4D5]">{u.role}</span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex justify-end gap-2">
+                              <button onClick={() => { setEditingUser(u); setShowUserModal(true); }} className="h-8 w-8 rounded-full border border-[#EBE4D5] hover:bg-[#F5EFE6] flex items-center justify-center transition-all">
+                                <Edit2 className="h-3.5 w-3.5 text-[#6B4423]" />
+                              </button>
+                              <button onClick={() => handleDeleteUser(u.id)} className="h-8 w-8 rounded-full border border-red-100 hover:bg-red-50 flex items-center justify-center transition-all">
+                                <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -532,19 +545,23 @@ export default function SettingsPage() {
             {activeTab === "terminals" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-[#1A4D2E]">Order Devices</h3>
-                  <button onClick={() => setShowTerminalModal(true)} className="btn-primary-sm"><Plus className="h-4 w-4" /> Add Device</button>
+                  <h3 className="text-lg font-black text-[#3E2B21]">Order Devices</h3>
+                  <button onClick={() => setShowTerminalModal(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[16px] bg-[#3E2B21] text-white font-bold text-sm hover:bg-[#2C1810] transition-colors shadow-[0_4px_12px_rgba(62,43,33,0.15)]">
+                    <Plus className="h-4 w-4" /> Add Device
+                  </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {terminals.map(t => (
-                    <div key={t.id} className="p-5 rounded-2xl border border-gray-200 flex justify-between items-center bg-gray-50">
+                    <div key={t.id} className="p-5 rounded-[20px] border border-[#EBE4D5]/60 flex justify-between items-center bg-[#FDFCF7] hover:shadow-[0_4px_20px_rgba(62,43,33,0.04)] transition-all">
                       <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                          <Monitor className="h-5 w-5 text-coffee-600" />
+                        <div className="h-10 w-10 bg-white rounded-[14px] flex items-center justify-center shadow-sm border border-[#EBE4D5]">
+                          <Monitor className="h-5 w-5 text-[#6B4423]" />
                         </div>
-                        <span className="font-bold text-coffee-800">{t.name}</span>
+                        <span className="font-bold text-[#3E2B21] text-sm">{t.name}</span>
                       </div>
-                      <button onClick={() => handleDeleteTerminal(t.id)} className="text-red-400 hover:text-red-600"><Trash2 className="h-5 w-5" /></button>
+                      <button onClick={() => handleDeleteTerminal(t.id)} className="h-8 w-8 rounded-full border border-red-100 hover:bg-red-50 flex items-center justify-center transition-all">
+                        <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -555,47 +572,59 @@ export default function SettingsPage() {
             {activeTab === "tables" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-[#1A4D2E]">Your Cafe Layout</h3>
-                  <button onClick={() => setShowFloorModal(true)} className="btn-primary-sm"><Plus className="h-4 w-4" /> Add Floor</button>
+                  <h3 className="text-lg font-black text-[#3E2B21]">Your Cafe Layout</h3>
+                  <button onClick={() => setShowFloorModal(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[16px] bg-[#3E2B21] text-white font-bold text-sm hover:bg-[#2C1810] transition-colors shadow-[0_4px_12px_rgba(62,43,33,0.15)]">
+                    <Plus className="h-4 w-4" /> Add Floor
+                  </button>
                 </div>
 
-                <div className="space-y-8">
+                <div className="space-y-6">
                   {floors.map(floor => (
-                    <div key={floor.id} className="p-6 rounded-[2rem] border border-gray-200 bg-gray-50/50 space-y-4">
-                      <div className="flex justify-between items-center border-b pb-3 border-gray-100">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl font-bold text-[#1A4D2E]">{floor.name}</span>
-                          <span className="text-xs font-semibold px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full">{floor.tables?.length || 0} tables</span>
+                    <div key={floor.id} className="p-6 rounded-[24px] border border-[#EBE4D5]/60 bg-[#FDFCF7] space-y-4">
+                      <div className="flex justify-between items-center border-b border-[#EBE4D5]/60 pb-4">
+                        <div className="flex items-center gap-3">
+                          <span className="text-lg font-black text-[#3E2B21]">{floor.name}</span>
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#F3EDE5] text-[#3E2B21]/50">{floor.tables?.length || 0} tables</span>
                         </div>
                         <div className="flex gap-2">
                           <button
                             onClick={() => { setSelectedFloorForTable(floor.id); setShowTableModal(true); }}
-                            className="px-3 py-1.5 bg-[#1A4D2E] hover:bg-[#143d24] text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm"
+                            className="px-3 py-1.5 bg-[#3E2B21] hover:bg-[#2C1810] text-white rounded-[12px] text-xs font-bold flex items-center gap-1 shadow-sm transition-colors"
                           >
                             <Plus className="h-3.5 w-3.5" /> Add Table
                           </button>
-                          <button onClick={() => handleDeleteFloor(floor.id)} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="h-4 w-4" /></button>
+                          <button onClick={() => handleDeleteFloor(floor.id)} className="h-8 w-8 rounded-full border border-red-100 hover:bg-red-50 flex items-center justify-center transition-all">
+                            <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                          </button>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {floor.tables?.map(table => (
-                          <div key={table.id} className="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                          <div key={table.id} className="bg-white p-4 rounded-[18px] border border-[#EBE4D5]/60 flex justify-between items-center hover:shadow-sm transition-all">
                             <div>
-                              <p className="font-bold text-coffee-800">{table.name}</p>
-                              <p className="text-xs text-gray-500">{table.seats} Seats • {table.status || 'AVAILABLE'}</p>
+                              <p className="font-bold text-[#3E2B21] text-sm">{table.name}</p>
+                              <p className="text-[11px] text-[#3E2B21]/40 font-medium">{table.seats} Seats • {table.status || 'AVAILABLE'}</p>
                             </div>
-                            <button onClick={() => handleDeleteTable(table.id)} className="text-red-400 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
+                            <button onClick={() => handleDeleteTable(table.id)} className="h-7 w-7 rounded-full border border-red-100 hover:bg-red-50 flex items-center justify-center transition-all">
+                              <Trash2 className="h-3 w-3 text-red-400" />
+                            </button>
                           </div>
                         ))}
                         {(!floor.tables || floor.tables.length === 0) && (
-                          <p className="text-xs text-gray-400 italic py-2 col-span-full">No tables on this floor yet.</p>
+                          <p className="text-[12px] text-[#3E2B21]/30 italic font-medium py-2 col-span-full">No tables on this floor yet.</p>
                         )}
                       </div>
                     </div>
                   ))}
                   {floors.length === 0 && (
-                    <p className="text-center text-gray-400 italic py-8">No floors created yet. Add a floor to get started!</p>
+                    <div className="text-center py-16">
+                      <div className="h-14 w-14 rounded-full bg-[#F5EFE6] flex items-center justify-center mx-auto mb-4">
+                        <MapPin className="h-7 w-7 text-[#3E2B21]/30" />
+                      </div>
+                      <p className="text-[#3E2B21]/50 font-bold">No floors created yet</p>
+                      <p className="text-sm text-[#3E2B21]/30 font-medium mt-1">Add a floor to get started!</p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -605,16 +634,20 @@ export default function SettingsPage() {
             {activeTab === "categories" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-[#1A4D2E]">Menu Categories</h3>
-                  <button onClick={() => setShowCategoryModal(true)} className="btn-primary-sm"><Plus className="h-4 w-4" /> Add Category</button>
+                  <h3 className="text-lg font-black text-[#3E2B21]">Menu Categories</h3>
+                  <button onClick={() => setShowCategoryModal(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[16px] bg-[#3E2B21] text-white font-bold text-sm hover:bg-[#2C1810] transition-colors shadow-[0_4px_12px_rgba(62,43,33,0.15)]">
+                    <Plus className="h-4 w-4" /> Add Category
+                  </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {categories.map(c => (
-                    <div key={c.id} className="p-4 rounded-2xl border border-gray-100 flex justify-between items-center hover:shadow-md transition bg-white">
-                      <span className="font-semibold text-coffee-700">{c.name}</span>
+                    <div key={c.id} className="p-4 rounded-[20px] border border-[#EBE4D5]/60 flex justify-between items-center hover:shadow-[0_4px_20px_rgba(62,43,33,0.04)] transition-all bg-[#FDFCF7]">
+                      <span className="font-bold text-[#3E2B21] text-sm">{c.name}</span>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs text-gray-400">{c._count?.products || 0} items</span>
-                        <button onClick={() => handleDeleteCategory(c.id)} className="text-red-300 hover:text-red-500"><Trash2 className="h-4 w-4" /></button>
+                        <span className="text-[11px] text-[#3E2B21]/30 font-medium">{c._count?.products || 0} items</span>
+                        <button onClick={() => handleDeleteCategory(c.id)} className="h-7 w-7 rounded-full border border-red-100 hover:bg-red-50 flex items-center justify-center transition-all">
+                          <Trash2 className="h-3 w-3 text-red-400" />
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -624,141 +657,117 @@ export default function SettingsPage() {
 
             {/* Payments */}
             {activeTab === "payments" && (
-              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center gap-4 border-b border-[#F3EEE2] pb-6">
-                  <div className="h-14 w-14 rounded-2xl bg-[#F7F4EB] flex items-center justify-center border border-[#E4E0D1] shadow-sm">
-                    <CreditCard className="h-7 w-7 text-[#1A4D2E]" />
+              <div className="space-y-8">
+                <div className="flex items-center gap-4 border-b border-[#EBE4D5]/60 pb-6">
+                  <div className="h-12 w-12 rounded-[18px] bg-[#F3EDE5] flex items-center justify-center">
+                    <CreditCard className="h-6 w-6 text-[#6B4423]" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-[#1A4D2E]">How Customers Pay</h3>
-                    <p className="text-[#5F6F65] text-sm">Toggle payment methods your cafe accepts.</p>
+                    <h3 className="text-lg font-black text-[#3E2B21]">How Customers Pay</h3>
+                    <p className="text-[#3E2B21]/40 text-sm font-medium">Toggle payment methods your cafe accepts.</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Cash Method */}
-                  <div 
+                  {/* Cash */}
+                  <div
                     onClick={() => setSettings({ ...settings, cashEnabled: !settings.cashEnabled })}
-                    className={`relative overflow-hidden cursor-pointer group p-6 rounded-[28px] border-2 transition-all duration-300 ${
-                      settings.cashEnabled 
-                        ? "border-[#1A4D2E] bg-[#F7FBF9] shadow-[0_15px_35px_rgba(26,77,46,0.1)]" 
-                        : "border-[#EFE8D8] bg-white hover:border-[#D1C9B0] grayscale"
+                    className={`relative overflow-hidden cursor-pointer p-6 rounded-[24px] border-2 transition-all duration-300 ${
+                      settings.cashEnabled
+                        ? "border-[#3E2B21] bg-[#FDFCF7] shadow-[0_8px_25px_rgba(62,43,33,0.08)]"
+                        : "border-[#EBE4D5] bg-white hover:border-[#EBE4D5]/80 grayscale"
                     }`}
                   >
-                    <div className="flex flex-col gap-4 relative z-10">
-                      <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-colors ${
-                        settings.cashEnabled ? "bg-[#1A4D2E] text-white" : "bg-[#F3EEE2] text-[#8C8775]"
+                    <div className="flex flex-col gap-4">
+                      <div className={`h-11 w-11 rounded-[14px] flex items-center justify-center transition-colors ${
+                        settings.cashEnabled ? "bg-[#3E2B21] text-white" : "bg-[#F5EFE6] text-[#3E2B21]/40"
                       }`}>
-                        <span className="text-2xl">💵</span>
+                        <span className="text-xl">💵</span>
                       </div>
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-bold text-[#1A4D2E]">Cash Payment</h4>
-                          <div className={`h-5 w-10 rounded-full flex items-center px-1 transition-colors ${
-                            settings.cashEnabled ? "bg-[#1A4D2E]" : "bg-[#D1C9B0]"
-                          }`}>
-                            <div className={`h-3 w-3 rounded-full bg-white transition-transform ${
-                              settings.cashEnabled ? "translate-x-5" : "translate-x-0"
-                            }`} />
+                          <h4 className="font-bold text-[#3E2B21] text-sm">Cash</h4>
+                          <div className={`h-5 w-10 rounded-full flex items-center px-1 transition-colors ${settings.cashEnabled ? "bg-[#3E2B21]" : "bg-[#EBE4D5]"}`}>
+                            <div className={`h-3 w-3 rounded-full bg-white transition-transform ${settings.cashEnabled ? "translate-x-5" : "translate-x-0"}`} />
                           </div>
                         </div>
-                        <p className="text-[11px] font-medium text-[#5F6F65] leading-relaxed">Accept physical currency directly at the counter.</p>
+                        <p className="text-[11px] font-medium text-[#3E2B21]/40 leading-relaxed">Physical currency at counter.</p>
                       </div>
                     </div>
-                    {settings.cashEnabled && (
-                      <div className="absolute -right-4 -bottom-4 h-24 w-24 bg-[#1A4D2E]/5 rounded-full blur-2xl" />
-                    )}
                   </div>
 
-                  {/* Card Method */}
-                  <div 
+                  {/* Card */}
+                  <div
                     onClick={() => setSettings({ ...settings, digitalEnabled: !settings.digitalEnabled })}
-                    className={`relative overflow-hidden cursor-pointer group p-6 rounded-[28px] border-2 transition-all duration-300 ${
-                      settings.digitalEnabled 
-                        ? "border-[#1A4D2E] bg-[#F7FBF9] shadow-[0_15px_35px_rgba(26,77,46,0.1)]" 
-                        : "border-[#EFE8D8] bg-white hover:border-[#D1C9B0] grayscale"
+                    className={`relative overflow-hidden cursor-pointer p-6 rounded-[24px] border-2 transition-all duration-300 ${
+                      settings.digitalEnabled
+                        ? "border-[#3E2B21] bg-[#FDFCF7] shadow-[0_8px_25px_rgba(62,43,33,0.08)]"
+                        : "border-[#EBE4D5] bg-white hover:border-[#EBE4D5]/80 grayscale"
                     }`}
                   >
-                    <div className="flex flex-col gap-4 relative z-10">
-                      <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-colors ${
-                        settings.digitalEnabled ? "bg-[#1A4D2E] text-white" : "bg-[#F3EEE2] text-[#8C8775]"
+                    <div className="flex flex-col gap-4">
+                      <div className={`h-11 w-11 rounded-[14px] flex items-center justify-center transition-colors ${
+                        settings.digitalEnabled ? "bg-[#3E2B21] text-white" : "bg-[#F5EFE6] text-[#3E2B21]/40"
                       }`}>
-                        <CreditCard className="h-6 w-6" />
+                        <CreditCard className="h-5 w-5" />
                       </div>
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-bold text-[#1A4D2E]">Card / POS</h4>
-                          <div className={`h-5 w-10 rounded-full flex items-center px-1 transition-colors ${
-                            settings.digitalEnabled ? "bg-[#1A4D2E]" : "bg-[#D1C9B0]"
-                          }`}>
-                            <div className={`h-3 w-3 rounded-full bg-white transition-transform ${
-                              settings.digitalEnabled ? "translate-x-5" : "translate-x-0"
-                            }`} />
+                          <h4 className="font-bold text-[#3E2B21] text-sm">Card / POS</h4>
+                          <div className={`h-5 w-10 rounded-full flex items-center px-1 transition-colors ${settings.digitalEnabled ? "bg-[#3E2B21]" : "bg-[#EBE4D5]"}`}>
+                            <div className={`h-3 w-3 rounded-full bg-white transition-transform ${settings.digitalEnabled ? "translate-x-5" : "translate-x-0"}`} />
                           </div>
                         </div>
-                        <p className="text-[11px] font-medium text-[#5F6F65] leading-relaxed">Enable card swipes via external machine or integrated POS.</p>
+                        <p className="text-[11px] font-medium text-[#3E2B21]/40 leading-relaxed">Card swipes via POS machine.</p>
                       </div>
                     </div>
-                    {settings.digitalEnabled && (
-                      <div className="absolute -right-4 -bottom-4 h-24 w-24 bg-[#1A4D2E]/5 rounded-full blur-2xl" />
-                    )}
                   </div>
 
-                  {/* UPI Method */}
-                  <div 
+                  {/* UPI */}
+                  <div
                     onClick={() => setSettings({ ...settings, upiEnabled: !settings.upiEnabled })}
-                    className={`relative overflow-hidden cursor-pointer group p-6 rounded-[28px] border-2 transition-all duration-300 ${
-                      settings.upiEnabled 
-                        ? "border-[#1A4D2E] bg-[#F7FBF9] shadow-[0_15px_35px_rgba(26,77,46,0.1)]" 
-                        : "border-[#EFE8D8] bg-white hover:border-[#D1C9B0] grayscale"
+                    className={`relative overflow-hidden cursor-pointer p-6 rounded-[24px] border-2 transition-all duration-300 ${
+                      settings.upiEnabled
+                        ? "border-[#3E2B21] bg-[#FDFCF7] shadow-[0_8px_25px_rgba(62,43,33,0.08)]"
+                        : "border-[#EBE4D5] bg-white hover:border-[#EBE4D5]/80 grayscale"
                     }`}
                   >
-                    <div className="flex flex-col gap-4 relative z-10">
-                      <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-colors ${
-                        settings.upiEnabled ? "bg-[#1A4D2E] text-white" : "bg-[#F3EEE2] text-[#8C8775]"
+                    <div className="flex flex-col gap-4">
+                      <div className={`h-11 w-11 rounded-[14px] flex items-center justify-center transition-colors ${
+                        settings.upiEnabled ? "bg-[#3E2B21] text-white" : "bg-[#F5EFE6] text-[#3E2B21]/40"
                       }`}>
-                        <span className="text-2xl">📱</span>
+                        <span className="text-xl">📱</span>
                       </div>
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-bold text-[#1A4D2E]">UPI / QR</h4>
-                          <div className={`h-5 w-10 rounded-full flex items-center px-1 transition-colors ${
-                            settings.upiEnabled ? "bg-[#1A4D2E]" : "bg-[#D1C9B0]"
-                          }`}>
-                            <div className={`h-3 w-3 rounded-full bg-white transition-transform ${
-                              settings.upiEnabled ? "translate-x-5" : "translate-x-0"
-                            }`} />
+                          <h4 className="font-bold text-[#3E2B21] text-sm">UPI / QR</h4>
+                          <div className={`h-5 w-10 rounded-full flex items-center px-1 transition-colors ${settings.upiEnabled ? "bg-[#3E2B21]" : "bg-[#EBE4D5]"}`}>
+                            <div className={`h-3 w-3 rounded-full bg-white transition-transform ${settings.upiEnabled ? "translate-x-5" : "translate-x-0"}`} />
                           </div>
                         </div>
-                        <p className="text-[11px] font-medium text-[#5F6F65] leading-relaxed">Customers can scan QR to pay via any UPI app (PhonePe, GPay, etc.)</p>
+                        <p className="text-[11px] font-medium text-[#3E2B21]/40 leading-relaxed">QR via PhonePe, GPay, etc.</p>
                       </div>
                     </div>
-                    {settings.upiEnabled && (
-                      <div className="absolute -right-4 -bottom-4 h-24 w-24 bg-[#1A4D2E]/5 rounded-full blur-2xl" />
-                    )}
                   </div>
                 </div>
 
                 {settings.upiEnabled && (
-                  <div className="p-8 rounded-[32px] border-2 border-dashed border-[#E4E0D1] bg-[#FDFCF7] animate-in zoom-in-95 duration-300">
-                    <div className="max-w-md">
-                      <label className="flex items-center gap-2 text-sm font-bold text-[#1A4D2E] mb-3">
-                        <span className="h-6 w-6 rounded-lg bg-[#1A4D2E] text-white flex items-center justify-center text-[10px]">QR</span>
-                        Default Merchant UPI ID
-                      </label>
-                      <div className="relative">
-                        <input 
-                          className="w-full px-6 py-4 rounded-2xl border-2 border-[#EFE8D8] focus:border-[#1A4D2E] focus:outline-none bg-white font-mono text-sm tracking-wider" 
-                          placeholder="merchant@upi" 
-                          value={settings.upiId || ""} 
-                          onChange={e => setSettings({ ...settings, upiId: e.target.value })} 
-                        />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                           {settings.upiId && <Check className="h-4 w-4 text-[#1A4D2E]" />}
+                  <div className="p-6 rounded-[24px] border-2 border-dashed border-[#EBE4D5] bg-[#FDFCF7]">
+                    <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Merchant UPI ID</label>
+                    <div className="relative max-w-md">
+                      <input
+                        className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-white font-mono text-sm tracking-wider text-[#3E2B21]"
+                        placeholder="merchant@upi"
+                        value={settings.upiId || ""}
+                        onChange={e => setSettings({ ...settings, upiId: e.target.value })}
+                      />
+                      {settings.upiId && (
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                          <Check className="h-4 w-4 text-green-600" />
                         </div>
-                      </div>
-                      <p className="mt-3 text-[11px] text-[#8C8775] font-medium">This ID will be used to generate dynamic QR codes for customers at checkout.</p>
+                      )}
                     </div>
+                    <p className="mt-2 text-[11px] text-[#3E2B21]/30 font-medium">Used to generate dynamic QR codes at checkout.</p>
                   </div>
                 )}
               </div>
@@ -768,7 +777,9 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Modals */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*  MODALS                                               */}
+      {/* ═══════════════════════════════════════════════════════ */}
       {showUserModal && (
         <UserModal
           user={editingUser}
@@ -811,17 +822,6 @@ export default function SettingsPage() {
           onSave={handleSaveTable}
         />
       )}
-
-      {/* Styles */}
-      <style jsx>{`
-        .label { @apply block text-sm font-bold text-coffee-700 mb-2; }
-        .input-field { @apply w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:border-coffee-600 focus:outline-none transition-colors; }
-        .btn-primary-sm { @apply px-4 py-2 bg-[#1A4D2E] text-white rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#143D24]; }
-        .badge { @apply px-2 py-1 rounded-md bg-gray-100 text-xs font-bold text-gray-600 uppercase; }
-        .toggle-card { @apply flex items-center justify-between p-4 bg-gray-50 rounded-2xl cursor-pointer hover:bg-gray-100 border border-transparent hover:border-gray-200 transition-all; }
-        .icon-box { @apply h-10 w-10 bg-white rounded-xl flex items-center justify-center text-coffee-700 shadow-sm; }
-        .toggle { @apply w-6 h-6 accent-[#1A4D2E]; }
-      `}</style>
     </div>
   );
 }
@@ -831,24 +831,39 @@ export default function SettingsPage() {
 function InputModal({ title, label, onClose, onSave, saving }) {
   const [val, setVal] = useState("");
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={saving ? undefined : onClose}>
-      <div className="bg-white rounded-3xl w-full max-w-sm p-6 space-y-4" onClick={e => e.stopPropagation()}>
-        <h3 className="text-xl font-bold text-coffee-800">{title}</h3>
-        <div>
-          <label className="block text-sm font-bold text-gray-600 mb-2">{label}</label>
-          <input 
-            autoFocus 
-            disabled={saving}
-            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-coffee-600 outline-none disabled:opacity-50" 
-            value={val} 
-            onChange={e => setVal(e.target.value)} 
-          />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={saving ? undefined : onClose}>
+      <div className="bg-white rounded-[32px] w-full max-w-sm shadow-[0_25px_80px_rgba(62,43,33,0.18)]" onClick={e => e.stopPropagation()}>
+        <div className="p-8 pb-6 border-b border-[#EBE4D5]/60">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-black text-[#3E2B21]">{title}</h3>
+            <button onClick={onClose} className="h-10 w-10 rounded-full bg-[#F5EFE6] hover:bg-[#EBE4D5] flex items-center justify-center transition-colors">
+              <X className="h-5 w-5 text-[#6B4423]" />
+            </button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <button onClick={onClose} disabled={saving} className="flex-1 py-3 font-bold text-gray-500 bg-gray-100 rounded-xl disabled:opacity-50">Cancel</button>
-          <button onClick={() => onSave(val)} disabled={!val || saving} className="flex-1 py-3 font-bold text-white bg-[#1A4D2E] rounded-xl disabled:opacity-50">
-            {saving ? "Saving..." : "Save"}
-          </button>
+        <div className="p-8 space-y-5">
+          <div>
+            <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">{label}</label>
+            <input
+              autoFocus
+              disabled={saving}
+              className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-sm font-medium text-[#3E2B21] disabled:opacity-50"
+              value={val}
+              onChange={e => setVal(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => onSave(val)}
+              disabled={!val || saving}
+              className="flex-1 py-3.5 rounded-[18px] bg-[#3E2B21] text-white font-bold text-sm hover:bg-[#2C1810] transition-colors shadow-[0_4px_12px_rgba(62,43,33,0.2)] disabled:opacity-50"
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
+            <button onClick={onClose} disabled={saving} className="flex-1 py-3.5 rounded-[18px] border-2 border-[#3E2B21] text-[#3E2B21] font-bold text-sm hover:bg-[#3E2B21]/5 transition-colors disabled:opacity-50">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -859,35 +874,46 @@ function TableModal({ onClose, onSave, saving }) {
   const [name, setName] = useState("");
   const [seats, setSeats] = useState("4");
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={saving ? undefined : onClose}>
-      <div className="bg-white rounded-3xl w-full max-w-sm p-6 space-y-4" onClick={e => e.stopPropagation()}>
-        <h3 className="text-xl font-bold text-coffee-800">Add Table</h3>
-        <div>
-          <label className="block text-sm font-bold text-gray-600 mb-2">Table Name</label>
-          <input 
-            autoFocus 
-            disabled={saving}
-            placeholder="e.g. Table 1" 
-            className="w-full px-4 py-2 border rounded-xl outline-none focus:border-[#1A4D2E] disabled:opacity-50" 
-            value={name} 
-            onChange={e => setName(e.target.value)} 
-          />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={saving ? undefined : onClose}>
+      <div className="bg-white rounded-[32px] w-full max-w-sm shadow-[0_25px_80px_rgba(62,43,33,0.18)]" onClick={e => e.stopPropagation()}>
+        <div className="p-8 pb-6 border-b border-[#EBE4D5]/60">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-black text-[#3E2B21]">Add Table</h3>
+            <button onClick={onClose} className="h-10 w-10 rounded-full bg-[#F5EFE6] hover:bg-[#EBE4D5] flex items-center justify-center transition-colors">
+              <X className="h-5 w-5 text-[#6B4423]" />
+            </button>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-bold text-gray-600 mb-1">Seats Count</label>
-          <input 
-            type="number" 
-            disabled={saving}
-            className="w-full px-4 py-2 border rounded-xl outline-none focus:border-[#1A4D2E] disabled:opacity-50" 
-            value={seats} 
-            onChange={e => setSeats(e.target.value)} 
-          />
-        </div>
-        <div className="flex gap-2">
-          <button onClick={onClose} disabled={saving} className="flex-1 py-3 font-bold text-gray-500 bg-gray-100 rounded-xl disabled:opacity-50">Cancel</button>
-          <button onClick={() => onSave(name, Number(seats))} disabled={!name || !seats || saving} className="flex-1 py-3 font-bold text-white bg-[#1A4D2E] rounded-xl disabled:opacity-50">
-            {saving ? "Saving..." : "Save"}
-          </button>
+        <div className="p-8 space-y-5">
+          <div>
+            <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Table Name</label>
+            <input
+              autoFocus
+              disabled={saving}
+              placeholder="e.g. Table 1"
+              className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-sm font-medium text-[#3E2B21] disabled:opacity-50"
+              value={name}
+              onChange={e => setName(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Seats Count</label>
+            <input
+              type="number"
+              disabled={saving}
+              className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-sm font-medium text-[#3E2B21] disabled:opacity-50"
+              value={seats}
+              onChange={e => setSeats(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-3">
+            <button onClick={() => onSave(name, Number(seats))} disabled={!name || !seats || saving} className="flex-1 py-3.5 rounded-[18px] bg-[#3E2B21] text-white font-bold text-sm hover:bg-[#2C1810] transition-colors shadow-[0_4px_12px_rgba(62,43,33,0.2)] disabled:opacity-50">
+              {saving ? "Saving..." : "Save"}
+            </button>
+            <button onClick={onClose} disabled={saving} className="flex-1 py-3.5 rounded-[18px] border-2 border-[#3E2B21] text-[#3E2B21] font-bold text-sm hover:bg-[#3E2B21]/5 transition-colors disabled:opacity-50">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -903,35 +929,47 @@ function UserModal({ user, onClose, onSave, saving }) {
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={saving ? undefined : onClose}>
-      <div className="bg-white rounded-3xl w-full max-w-md p-8 space-y-5" onClick={e => e.stopPropagation()}>
-        <h3 className="text-2xl font-bold text-coffee-800">{user ? "Edit User" : "Add New User"}</h3>
-        <div className="space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4" onClick={saving ? undefined : onClose}>
+      <div className="bg-white rounded-[32px] w-full max-w-md shadow-[0_25px_80px_rgba(62,43,33,0.18)]" onClick={e => e.stopPropagation()}>
+        <div className="p-8 pb-6 border-b border-[#EBE4D5]/60">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-[#F3EDE5] flex items-center justify-center">
+                <Users className="h-5 w-5 text-[#6B4423]" />
+              </div>
+              <h3 className="text-xl font-black text-[#3E2B21]">{user ? "Edit User" : "Add New User"}</h3>
+            </div>
+            <button onClick={onClose} className="h-10 w-10 rounded-full bg-[#F5EFE6] hover:bg-[#EBE4D5] flex items-center justify-center transition-colors">
+              <X className="h-5 w-5 text-[#6B4423]" />
+            </button>
+          </div>
+        </div>
+        <div className="p-8 space-y-5">
           <div>
-            <label className="block text-sm font-bold text-gray-600 mb-1">Full Name</label>
-            <input 
+            <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Full Name</label>
+            <input
               disabled={saving}
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-coffee-600 outline-none disabled:opacity-50" 
-              value={data.name} 
-              onChange={e => setData({ ...data, name: e.target.value })} 
+              className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-sm font-medium text-[#3E2B21] disabled:opacity-50"
+              value={data.name}
+              onChange={e => setData({ ...data, name: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-600 mb-1">Email</label>
-            <input 
-              type="email" 
+            <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Email</label>
+            <input
+              type="email"
               disabled={saving}
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-coffee-600 outline-none disabled:opacity-50" 
-              value={data.email} 
-              onChange={e => setData({ ...data, email: e.target.value })} 
+              className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-sm font-medium text-[#3E2B21] disabled:opacity-50"
+              value={data.email}
+              onChange={e => setData({ ...data, email: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-600 mb-1">Role</label>
-            <select 
+            <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">Role</label>
+            <select
               disabled={saving}
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-coffee-600 outline-none bg-white disabled:opacity-50" 
-              value={data.role} 
+              className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none bg-[#FDFCF7] text-sm font-medium text-[#3E2B21] disabled:opacity-50"
+              value={data.role}
               onChange={e => setData({ ...data, role: e.target.value })}
             >
               <option value="EMPLOYEE">Cashier</option>
@@ -940,21 +978,23 @@ function UserModal({ user, onClose, onSave, saving }) {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-600 mb-1">{user ? "New Password (Optional)" : "Password"}</label>
-            <input 
-              type="password" 
+            <label className="block text-[11px] font-bold text-[#3E2B21]/40 tracking-wider uppercase mb-2">{user ? "New Password (Optional)" : "Password"}</label>
+            <input
+              type="password"
               disabled={saving}
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-coffee-600 outline-none disabled:opacity-50" 
-              value={data.password} 
-              onChange={e => setData({ ...data, password: e.target.value })} 
+              className="w-full px-4 py-3.5 rounded-[18px] border border-[#EBE4D5] focus:border-[#3E2B21]/30 focus:outline-none focus:ring-2 focus:ring-[#3E2B21]/10 bg-[#FDFCF7] text-sm font-medium text-[#3E2B21] disabled:opacity-50"
+              value={data.password}
+              onChange={e => setData({ ...data, password: e.target.value })}
             />
           </div>
-        </div>
-        <div className="flex gap-3 pt-2">
-          <button onClick={onClose} disabled={saving} className="flex-1 py-3 font-bold text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 disabled:opacity-50">Cancel</button>
-          <button onClick={() => onSave(data)} disabled={saving} className="flex-1 py-3 font-bold text-white bg-[#1A4D2E] rounded-xl hover:bg-[#143D24] disabled:opacity-50">
-            {saving ? "Saving..." : "Save User"}
-          </button>
+          <div className="flex gap-3 pt-2">
+            <button onClick={() => onSave(data)} disabled={saving} className="flex-1 py-3.5 rounded-[18px] bg-[#3E2B21] text-white font-bold text-sm hover:bg-[#2C1810] transition-colors shadow-[0_4px_12px_rgba(62,43,33,0.2)] disabled:opacity-50">
+              {saving ? "Saving..." : "Save User"}
+            </button>
+            <button onClick={onClose} disabled={saving} className="flex-1 py-3.5 rounded-[18px] border-2 border-[#3E2B21] text-[#3E2B21] font-bold text-sm hover:bg-[#3E2B21]/5 transition-colors disabled:opacity-50">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>

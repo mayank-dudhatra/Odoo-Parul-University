@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Coffee, Eye, EyeOff, Sparkles, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,234 +19,286 @@ export default function LoginPage() {
 
   const handleLoginSuccess = (user) => {
     if (!user) return;
-
     switch (user.role) {
-      case 'KITCHEN':
-        router.push("/kitchen");
-        break;
+      case 'KITCHEN': router.push("/kitchen"); break;
       case 'EMPLOYEE':
-      case 'CASHIER':
-        router.push("/pos/session");
-        break;
+      case 'CASHIER': router.push("/pos/session"); break;
       case 'ADMIN':
-      default:
-        router.push("/dashboard");
-        break;
+      default: router.push("/dashboard"); break;
     }
   };
 
   const onSubmit = async (data) => {
     const user = await login(data.email, data.password);
-    if (user) {
-      handleLoginSuccess(user);
-    }
+    if (user) handleLoginSuccess(user);
   };
 
   const handleQuickLogin = async (role) => {
     let email = "";
     let password = "password123";
-
     if (role === "admin") email = "admin@odoo-cafe.com";
     if (role === "kitchen") email = "gordon@odoo-cafe.com";
     if (role === "cashier") email = "jagjeet@odoo-cafe.com";
-
     const user = await login(email, password);
     if (user) handleLoginSuccess(user);
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-[#FBFBF2]">
+    <div className="flex min-h-screen w-full">
 
-      {/* ✅ Left Side - Premium Branding */}
-      <div
-        className="hidden lg:flex lg:w-1/2 relative overflow-hidden px-16 py-20
-        bg-[#1A4D2E]"
-      >
-        {/* Background Image */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*  LEFT — CINEMATIC BRANDING PANEL                      */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-[#2A1A10]">
+        {/* Background image */}
         <div
-          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=2574&auto=format&fit=crop')]
-          bg-cover bg-center opacity-20"
-        ></div>
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=2574&auto=format&fit=crop')`, opacity: 0.25 }}
+        />
 
-        {/* Dark Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A4D2E] via-[#1A4D2E]/50 to-transparent"></div>
+        {/* Multi-layer gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2A1A10]/95 via-[#3E2B21]/70 to-[#2A1A10]/90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A0F08] via-transparent to-transparent opacity-60" />
+
+        {/* Warm glow orbs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -left-20 top-[20%] h-[400px] w-[400px] rounded-full bg-[#A87B51]/12 blur-[150px]" />
+          <div className="absolute right-[10%] top-[10%] h-[250px] w-[250px] rounded-full bg-[#D4A574]/8 blur-[120px]" />
+          <div className="absolute left-[30%] bottom-[5%] h-[350px] w-[350px] rounded-full bg-[#6B4423]/15 blur-[140px]" />
+        </div>
+
+        {/* Subtle grain texture via CSS */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")`}} />
 
         {/* Content */}
-        <div className="relative z-10 max-w-xl text-[#FEFCE8] space-y-10">
-
-          {/* Logo Badge */}
+        <div className="relative z-10 flex flex-col justify-between p-14 lg:p-20 w-full">
+          {/* Logo */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div className="h-24 w-24 rounded-3xl bg-[#FEFCE8]/10 backdrop-blur-md flex items-center justify-center shadow-2xl border border-[#FEFCE8]/20">
-              <Image
-                src="/odoo_cafe_logo.png"
-                alt="logo"
-                width={82}
-                height={82}
-                className="object-contain brightness-0 invert"
-              />
+            <div className="h-16 w-16 rounded-[20px] bg-white/[0.08] backdrop-blur-xl flex items-center justify-center border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+              <Image src="/odoo_cafe_logo.png" alt="logo" width={48} height={48} className="object-contain brightness-0 invert opacity-90" />
             </div>
           </motion.div>
 
-          {/* Heading */}
-          <h2 className="text-6xl font-extrabold leading-[1.1] tracking-tight text-[#FEFCE8]">
-            Brewing Success,
-            <span className="block text-[#4ADE80]">
-              One Cup at a Time.
-            </span>
-          </h2>
+          {/* Main copy */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.4 }}
+            className="space-y-8 max-w-lg"
+          >
+            <div className="space-y-6">
+              <h1 className="text-[56px] lg:text-[64px] font-black leading-[1.05] tracking-[-0.02em] text-white">
+                Brewing
+                <br />
+                <span className="bg-gradient-to-r from-[#D4A574] via-[#E8C4A0] to-[#D4A574] bg-clip-text text-transparent">
+                  Success.
+                </span>
+              </h1>
+              <p className="text-white/40 text-lg leading-relaxed font-medium max-w-sm">
+                The premium point-of-sale built for modern cafés — efficient, beautiful, and powerful.
+              </p>
+            </div>
 
-          {/* Subtitle */}
-          <p className="text-lg text-[#E8F5E9] leading-relaxed max-w-md opacity-90">
-            The premium point-of-sale system designed for modern cafés —
-            <span className="font-semibold text-[#FEFCE8]">
-              {" "}
-              efficient, beautiful, and powerful.
-            </span>
-          </p>
+            {/* Social proof bar */}
+            <div className="flex items-center gap-5">
+              <div className="flex -space-x-2.5">
+                {["☕", "🧑‍🍳", "💼", "🎯"].map((emoji, i) => (
+                  <div key={i} className="h-9 w-9 rounded-full bg-white/[0.08] border-2 border-[#2A1A10] flex items-center justify-center text-sm backdrop-blur-sm">
+                    {emoji}
+                  </div>
+                ))}
+              </div>
+              <div className="h-8 w-px bg-white/10" />
+              <p className="text-white/30 text-sm font-medium">
+                Trusted by <span className="text-white/60 font-bold">500+</span> cafés
+              </p>
+            </div>
+          </motion.div>
 
-          {/* Trust Badge */}
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#FEFCE8]/10 border border-[#FEFCE8]/20 text-sm text-[#E8F5E9]">
-            ☕ Built for cafes & restaurants worldwide
-          </div>
+          {/* Bottom tag */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="flex items-center gap-3 text-white/20 text-sm font-medium"
+          >
+            <Coffee className="h-4 w-4" />
+            <span>Odoo Cafe POS · Built for excellence</span>
+          </motion.div>
         </div>
       </div>
 
-      {/* ✅ Right Side - Form */}
-      <div className="flex w-full lg:w-1/2 items-center justify-center p-8 bg-[#FBFBF2]">
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*  RIGHT — LOGIN FORM                                   */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div className="flex w-full lg:w-[45%] items-center justify-center p-6 sm:p-10 bg-[#FAF7F2]">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="w-full max-w-md space-y-8 bg-white p-10 rounded-[2.5rem] shadow-xl shadow-[#1A4D2E]/5 border border-[#E8F5E9]"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="w-full max-w-[420px] space-y-0"
         >
-          {/* Title */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-[#1A4D2E]">
-              Welcome back
-            </h2>
-            <p className="mt-2 text-sm text-[#5F6F65]">
-              Please enter your details to sign in.
-            </p>
-
-            {/* Quick Access Grid */}
-            <div className="mt-6 mb-6 p-4 bg-beige-100 rounded-2xl border border-[#E8F5E9]">
-              <p className="text-xs font-bold text-[#5F6F65] uppercase mb-3">Quick Demo Access</p>
-              <div className="grid grid-cols-3 gap-3">
-                <button
-                  onClick={() => handleQuickLogin('admin')}
-                  className="p-3 bg-white hover:bg-gold-100 rounded-xl text-xs font-bold text-[#1A4D2E] shadow-sm transition-colors border border-transparent hover:border-gold-300"
-                >
-                  👑 Admin
-                </button>
-                <button
-                  onClick={() => handleQuickLogin('kitchen')}
-                  className="p-3 bg-white hover:bg-orange-100 rounded-xl text-xs font-bold text-orange-800 shadow-sm transition-colors border border-transparent hover:border-orange-300"
-                >
-                  👨‍🍳 Kitchen
-                </button>
-                <button
-                  onClick={() => handleQuickLogin('cashier')}
-                  className="p-3 bg-white hover:bg-green-100 rounded-xl text-xs font-bold text-green-800 shadow-sm transition-colors border border-transparent hover:border-green-300"
-                >
-                  🛒 Cashier
-                </button>
-              </div>
+          {/* Mobile logo */}
+          <div className="lg:hidden flex justify-center mb-10">
+            <div className="h-16 w-16 rounded-[20px] bg-[#3E2B21] flex items-center justify-center shadow-[0_8px_30px_rgba(62,43,33,0.3)]">
+              <Coffee className="h-8 w-8 text-white" />
             </div>
-
-            {error && (
-              <p className="mt-3 text-sm text-red-500 font-medium">
-                {error}
-              </p>
-            )}
           </div>
 
-          {/* Form */}
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          {/* Header */}
+          <div className="text-center lg:text-left mb-10">
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="text-[32px] font-black tracking-tight text-[#2A1A10]"
+            >
+              Welcome back
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="mt-2 text-[15px] text-[#2A1A10]/35 font-medium"
+            >
+              Sign in to your dashboard
+            </motion.p>
+          </div>
 
-            <div className="space-y-5">
-              {/* Email */}
-              <div>
-                <label className="text-sm font-bold text-[#1A4D2E] ml-1">
-                  Email address
-                </label>
+          {/* Quick Demo Access */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.65 }}
+            className="mb-8"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#2A1A10]/10 to-transparent" />
+              <span className="text-[10px] font-bold text-[#2A1A10]/25 tracking-[0.2em] uppercase">Quick Demo</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#2A1A10]/10 to-transparent" />
+            </div>
+            <div className="grid grid-cols-3 gap-2.5">
+              {[
+                { role: "admin", emoji: "👑", label: "Admin", color: "from-[#F5EFE6] to-[#EDE4D4]" },
+                { role: "kitchen", emoji: "👨‍🍳", label: "Kitchen", color: "from-[#F5EFE6] to-[#EDE4D4]" },
+                { role: "cashier", emoji: "🛒", label: "Cashier", color: "from-[#F5EFE6] to-[#EDE4D4]" },
+              ].map(({ role, emoji, label, color }) => (
+                <button
+                  key={role}
+                  onClick={() => handleQuickLogin(role)}
+                  className={`group relative overflow-hidden p-3.5 bg-gradient-to-b ${color} rounded-[16px] text-[13px] font-bold text-[#2A1A10]/70 transition-all duration-300 border border-[#2A1A10]/[0.04] hover:border-[#2A1A10]/10 hover:shadow-[0_8px_25px_rgba(42,26,16,0.06)] hover:-translate-y-0.5 active:translate-y-0`}
+                >
+                  <span className="flex flex-col items-center gap-1.5">
+                    <span className="text-lg group-hover:scale-110 transition-transform duration-300">{emoji}</span>
+                    <span>{label}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Error */}
+          {error && (
+            <div className="mb-6 px-4 py-3.5 rounded-[16px] bg-red-50/80 border border-red-100/60 backdrop-blur-sm">
+              <p className="text-sm text-red-600 font-semibold">{error}</p>
+            </div>
+          )}
+
+          {/* Form */}
+          <motion.form
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+            className="space-y-5"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            {/* Email */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-[11px] font-bold text-[#2A1A10]/30 tracking-[0.15em] uppercase ml-1">
+                <Mail className="h-3 w-3" /> Email
+              </label>
+              <div className="relative group">
                 <Input
                   {...register("email")}
                   type="email"
                   placeholder="barista@odoocafe.com"
-                  className="mt-2 h-14 rounded-2xl border-gray-200 focus:border-[#1A4D2E] focus:ring-[#1A4D2E] bg-gray-50/50"
+                  className="h-[54px] rounded-[16px] border-[#2A1A10]/[0.06] bg-white focus:border-[#2A1A10]/15 focus:ring-2 focus:ring-[#2A1A10]/[0.04] text-[15px] font-medium text-[#2A1A10] placeholder:text-[#2A1A10]/20 shadow-[0_2px_8px_rgba(42,26,16,0.02)] transition-all duration-200 group-hover:border-[#2A1A10]/10"
                 />
               </div>
+            </div>
 
-              {/* Password */}
-              <div>
-                <label className="text-sm font-bold text-[#1A4D2E] ml-1">
-                  Password
+            {/* Password */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 text-[11px] font-bold text-[#2A1A10]/30 tracking-[0.15em] uppercase ml-1">
+                  <Lock className="h-3 w-3" /> Password
                 </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-[12px] font-bold text-[#2A1A10]/30 hover:text-[#2A1A10]/60 transition-colors"
+                >
+                  Forgot?
+                </Link>
+              </div>
+              <div className="relative group">
                 <Input
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  className="mt-2 h-14 rounded-2xl border-gray-200 focus:border-[#1A4D2E] focus:ring-[#1A4D2E] bg-gray-50/50"
+                  className="h-[54px] rounded-[16px] border-[#2A1A10]/[0.06] bg-white focus:border-[#2A1A10]/15 focus:ring-2 focus:ring-[#2A1A10]/[0.04] text-[15px] font-medium text-[#2A1A10] placeholder:text-[#2A1A10]/20 pr-14 shadow-[0_2px_8px_rgba(42,26,16,0.02)] transition-all duration-200 group-hover:border-[#2A1A10]/10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-[12px] hover:bg-[#2A1A10]/[0.04] flex items-center justify-center transition-all"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-[18px] w-[18px] text-[#2A1A10]/25" />
+                  ) : (
+                    <Eye className="h-[18px] w-[18px] text-[#2A1A10]/25" />
+                  )}
+                </button>
               </div>
             </div>
 
-            {/* Remember + Forgot */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <input
-                  id="show-password"
-                  type="checkbox"
-                  checked={showPassword}
-                  onChange={() => setShowPassword(!showPassword)}
-                  className="h-4 w-4 rounded border-gray-300 text-[#1A4D2E] focus:ring-[#1A4D2E]"
-                />
-                <label
-                  htmlFor="show-password"
-                  className="text-sm text-[#5F6F65] cursor-pointer"
-                >
-                  Show Password
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <Link
-                  href="/forgot-password"
-                  className="font-bold text-[#1A4D2E] hover:text-[#143d24]"
-                >
-                  Forgot password?
-                </Link>
-              </div>
+            {/* Submit */}
+            <div className="pt-2">
+              <Button
+                type="submit"
+                className="w-full h-[54px] text-[16px] font-bold rounded-[16px] bg-[#2A1A10] hover:bg-[#1A0F08] text-white shadow-[0_4px_20px_rgba(42,26,16,0.25)] hover:shadow-[0_8px_30px_rgba(42,26,16,0.35)] transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Signing in...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2.5">
+                    Sign In <ArrowRight className="h-[18px] w-[18px]" />
+                  </span>
+                )}
+              </Button>
             </div>
+          </motion.form>
 
-            {/* Button */}
-            <Button
-              type="submit"
-              className="w-full h-14 text-lg font-bold rounded-2xl bg-[#1A4D2E] hover:bg-[#143d24] text-[#FEFCE8] shadow-lg hover:shadow-xl transition-all duration-300"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                "Signing in..."
-              ) : (
-                <span className="flex items-center justify-center gap-2">
-                  Sign In <ArrowRight className="h-5 w-5" />
-                </span>
-              )}
-            </Button>
-
-
-          </form>
+          {/* Divider */}
+          <div className="pt-8">
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#2A1A10]/8 to-transparent" />
+            </div>
+          </div>
 
           {/* Footer */}
-          <p className="text-center text-sm text-[#5F6F65]">
+          <p className="text-center text-[14px] text-[#2A1A10]/30 font-medium pt-6">
             Don't have an account?{" "}
             <Link
               href="/signup"
-              className="font-bold text-[#1A4D2E] hover:text-[#143d24]"
+              className="font-bold text-[#2A1A10]/70 hover:text-[#2A1A10] transition-colors underline decoration-[#2A1A10]/15 underline-offset-2 hover:decoration-[#2A1A10]/40"
             >
               Sign up
             </Link>
