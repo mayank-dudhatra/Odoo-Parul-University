@@ -61,6 +61,7 @@ app.use('/api/settings', require('./routes/settings.routes'));
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/coupons', require('./routes/coupon.routes'));
 app.use('/api/payments', require('./routes/payment.routes'));
+app.use('/api/promotions', require('./routes/promotion.routes'));
 
 // ─── Health Check ───────────────────────────────────────────
 app.get('/health', (req, res) => {

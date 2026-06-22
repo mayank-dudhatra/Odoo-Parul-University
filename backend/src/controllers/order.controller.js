@@ -26,7 +26,9 @@ const createOrderSchema = z.object({
     mobile: z.string().optional().nullable()
   }).optional().nullable(),
   couponCode: z.string().optional().nullable(),
-  status: z.enum(['DRAFT', 'SENT', 'PREPARING', 'COMPLETED', 'PAID', 'CANCELLED']).default('SENT')
+  status: z.enum(['DRAFT', 'SENT', 'PREPARING', 'COMPLETED', 'PAID', 'CANCELLED']).default('SENT'),
+  autoApply: z.boolean().optional().default(true),
+  appliedManualPromotions: z.array(z.string()).optional().default([])
 });
 
 const updateStatusSchema = z.object({
@@ -116,73 +118,34 @@ exports.createOrder = async (req, res) => {
       }
     }
 
-    let subtotal = 0;
-    let taxAmount = 0;
+    // Evaluate Promotions
+    const PromotionService = require('../services/promotion.service');
+    const evaluation = await PromotionService.evaluateCart(
+      items,
+      couponCode,
+      customer,
+      validatedData.autoApply,
+      validatedData.appliedManualPromotions
+    );
 
-    const orderItemsData = items.map(item => {
-      const product = productMap.get(item.productId);
-      if (!product) throw new Error(`Product ${item.productId} not found`);
+    const subtotal = evaluation.subtotal;
+    const discountAmount = evaluation.discountAmount;
+    const taxAmount = evaluation.taxAmount;
+    const totalAmount = evaluation.totalAmount;
+    const discountCodeSaved = couponCode ? couponCode.toUpperCase().trim() : null;
 
-      let price = Number(product.price);
-      let variantName = null;
-      let variantId = null;
-
-      // Handle Variant Logic
-      if (item.variantId) {
-        const variant = product.variants.find(v => v.id === item.variantId);
-        if (!variant) {
-          throw new Error(`Variant ${item.variantId} not found for product ${product.name}`);
-        }
-        price += Number(variant.extraPrice);
-        variantName = variant.name;
-        variantId = variant.id;
-      }
-
-      const itemTotal = price * item.quantity;
-      subtotal += itemTotal;
-
-      const itemTax = itemTotal * (Number(product.tax) / 100);
-      taxAmount += itemTax;
-
+    const orderItemsData = evaluation.items.map(item => {
       return {
         productId: item.productId,
-        productName: product.name,
-        price: price,
-        variantName: variantName,
-        variantId: variantId,
+        productName: item.productName,
+        price: item.price,
+        variantName: item.variantName,
+        variantId: item.variantId,
         quantity: item.quantity,
-        notes: item.notes || null,
+        notes: item.notes || (item.isFree ? "Free Product Reward" : null),
         status: 'PENDING'
       };
     });
-
-    // Handle Discount
-    let discountAmount = 0;
-    let discountCodeSaved = null;
-
-    if (couponCode) {
-      const coupon = await prisma.coupon.findUnique({
-        where: { code: couponCode.toUpperCase() }
-      });
-
-      if (coupon && coupon.isActive) {
-        const hasExpired = coupon.expiresAt && new Date(coupon.expiresAt) < new Date();
-        if (!hasExpired) {
-          discountCodeSaved = coupon.code;
-          if (coupon.type === 'PERCENTAGE') {
-            discountAmount = subtotal * (Number(coupon.discount) / 100);
-          } else {
-            discountAmount = Number(coupon.discount);
-          }
-          // Cap discount at subtotal
-          if (discountAmount > subtotal) {
-            discountAmount = subtotal;
-          }
-        }
-      }
-    }
-
-    const totalAmount = subtotal + taxAmount - discountAmount;
 
     let order;
 
@@ -206,6 +169,7 @@ exports.createOrder = async (req, res) => {
           discountAmount,
           discountCode: discountCodeSaved,
           totalAmount,
+          appliedPromotions: evaluation.appliedPromotions,
           status: 'DRAFT',
           paymentStatus: 'PENDING',
           customerName: customer?.name || null,
@@ -237,6 +201,7 @@ exports.createOrder = async (req, res) => {
           discountAmount,
           discountCode: discountCodeSaved,
           totalAmount,
+          appliedPromotions: evaluation.appliedPromotions,
           status: 'DRAFT',
           paymentStatus: 'PENDING',
           customerName: customer?.name || null,

@@ -103,11 +103,11 @@ export default function SettingsPage() {
         showToast("Settings saved successfully!", "success");
       } else {
         const err = await response.json();
-        showAlert(formatErrorMessage(err), "Save Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (error) {
       console.error("Save failed:", error);
-      showAlert(error.message, "Save Settings", "error");
+      showToast(error.message, "error");
     } finally {
       setSaving(false);
     }
@@ -137,10 +137,10 @@ export default function SettingsPage() {
         showToast(`User ${editingUser ? "updated" : "created"} successfully!`, "success");
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "User Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) { 
-      showAlert(e.message, "User Settings", "error"); 
+      showToast(e.message, "error"); 
     } finally {
       setSaving(false);
     }
@@ -159,10 +159,10 @@ export default function SettingsPage() {
         await fetchData();
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Delete User", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) {
-      showAlert(e.message, "Delete User", "error");
+      showToast(e.message, "error");
     } finally {
       setSaving(false);
     }
@@ -185,10 +185,10 @@ export default function SettingsPage() {
         showToast("Terminal created successfully", "success");
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Terminal Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) { 
-      showAlert(e.message, "Terminal Settings", "error"); 
+      showToast(e.message, "error"); 
     } finally {
       setSaving(false);
     }
@@ -207,10 +207,10 @@ export default function SettingsPage() {
         await fetchData();
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Delete Terminal", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) {
-      showAlert(e.message, "Delete Terminal", "error");
+      showToast(e.message, "error");
     } finally {
       setSaving(false);
     }
@@ -233,10 +233,10 @@ export default function SettingsPage() {
         showToast("Category created successfully", "success");
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Category Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) { 
-      showAlert(e.message, "Category Settings", "error"); 
+      showToast(e.message, "error"); 
     } finally {
       setSaving(false);
     }
@@ -252,13 +252,13 @@ export default function SettingsPage() {
       const res = await fetch(`${API_URL}/products/categories/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
       if (!res.ok) {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Category Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       } else {
         showToast("Category deleted successfully", "success");
         await fetchData();
       }
     } catch (e) {
-      showAlert(e.message, "Category Settings", "error");
+      showToast(e.message, "error");
     } finally {
       setSaving(false);
     }
@@ -281,10 +281,10 @@ export default function SettingsPage() {
         showToast("Floor created successfully", "success");
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Floor Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) { 
-      showAlert(e.message, "Floor Settings", "error"); 
+      showToast(e.message, "error"); 
     } finally {
       setSaving(false);
     }
@@ -303,10 +303,10 @@ export default function SettingsPage() {
         await fetchData();
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Floor Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) {
-      showAlert(e.message, "Floor Settings", "error");
+      showToast(e.message, "error");
     } finally {
       setSaving(false);
     }
@@ -330,10 +330,10 @@ export default function SettingsPage() {
         showToast("Table created successfully", "success");
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Table Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) { 
-      showAlert(e.message, "Table Settings", "error"); 
+      showToast(e.message, "error"); 
     } finally {
       setSaving(false);
     }
@@ -352,10 +352,10 @@ export default function SettingsPage() {
         await fetchData();
       } else {
         const err = await res.json();
-        showAlert(formatErrorMessage(err), "Table Settings", "error");
+        showToast(formatErrorMessage(err), "error");
       }
     } catch (e) {
-      showAlert(e.message, "Table Settings", "error");
+      showToast(e.message, "error");
     } finally {
       setSaving(false);
     }

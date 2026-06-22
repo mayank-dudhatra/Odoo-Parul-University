@@ -21,7 +21,7 @@ const sidebarItems = [
   { icon: ShoppingBag, label: "Orders", href: "/dashboard/orders" },
   { icon: Coffee, label: "Products", href: "/dashboard/products" },
   { icon: Users, label: "Customers", href: "/dashboard/customers" },
-  { icon: Ticket, label: "Coupons", href: "/dashboard/coupons" },
+  { icon: Ticket, label: "Promotions", href: "/dashboard/promotions" },
   { icon: Settings, label: "Manage Cafe", href: "/dashboard/settings" },
 ];
 

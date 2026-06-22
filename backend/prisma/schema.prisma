@@ -106,9 +106,10 @@ model Product {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   imageUrl      String?
-  orderItems    OrderItem[]
-  category      Category    @relation(fields: [categoryId], references: [id])
-  variants      Variant[]
+  orderItems        OrderItem[]
+  category          Category    @relation(fields: [categoryId], references: [id])
+  variants          Variant[]
+  promotionProducts PromotionProduct[]
 
   @@index([categoryId])
 }
@@ -148,9 +149,10 @@ model Order {
   kitchenTicket  KitchenTicket?
   session        Session?       @relation(fields: [sessionId], references: [id])
   table          Table?         @relation(fields: [tableId], references: [id])
-  user           User?          @relation(fields: [userId], references: [id])
-  items          OrderItem[]
-  payments       Payment[]
+  user              User?          @relation(fields: [userId], references: [id])
+  items             OrderItem[]
+  payments          Payment[]
+  appliedPromotions Json?
 
   @@index([createdAt])
   @@index([customerEmail])
@@ -262,4 +264,93 @@ enum PaymentStatus {
 enum SessionStatus {
   OPEN
   CLOSED
+}
+
+model Promotion {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  type        String   // 'COUPON', 'PRODUCT_DISCOUNT', 'BUY_X_GET_Y', 'COMBO', 'ORDER_VALUE'
+  isActive    Boolean  @default(true)
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  couponCode  CouponCode?
+  products    PromotionProduct[]
+  conditions  PromotionCondition[]
+  rewards     PromotionReward[]
+
+  @@map("promotions")
+}
+
+model CouponCode {
+  id          String   @id @default(uuid())
+  promotionId String   @unique
+  code        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@map("coupon_codes")
+}
+
+model PromotionProduct {
+  id          String   @id @default(uuid())
+  promotionId String
+  productId   String
+  role        String   // 'TRIGGER', 'REWARD', 'DISCOUNTED', 'COMBO_ITEM'
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([promotionId])
+  @@index([productId])
+  @@map("promotion_products")
+}
+
+model PromotionCondition {
+  id               String   @id @default(uuid())
+  promotionId      String
+  minOrderAmount   Decimal? @db.Decimal(10, 2)
+  triggerProductId String?
+  triggerQuantity  Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  promotion        Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@index([promotionId])
+  @@map("promotion_conditions")
+}
+
+model PromotionReward {
+  id              String   @id @default(uuid())
+  promotionId     String
+  rewardProductId String?
+  rewardQuantity  Int?
+  discountType    String?  // 'PERCENTAGE', 'FIXED'
+  discountValue   Decimal? @db.Decimal(10, 2)
+  comboPrice      Decimal? @db.Decimal(10, 2)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  promotion       Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@index([promotionId])
+  @@map("promotion_rewards")
+}
+
+model PromotionTemplate {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  type        String   // 'COUPON', 'PRODUCT_DISCOUNT', 'BUY_X_GET_Y', 'COMBO', 'ORDER_VALUE'
+  configJson  String   // JSON configuration containing template parameters
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("promotion_templates")
 }

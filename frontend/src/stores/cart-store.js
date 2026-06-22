@@ -12,12 +12,25 @@ export const CartProvider = ({ children }) => {
   const [coupon, setCoupon] = useState(null);
   const [isHydrated, setIsHydrated] = useState(false);
 
+  const [autoApply, setAutoApply] = useState(true);
+  const [appliedManualPromotions, setAppliedManualPromotions] = useState([]);
+  const [evaluatedData, setEvaluatedData] = useState({
+    items: [],
+    subtotal: 0,
+    discountAmount: 0,
+    taxAmount: 0,
+    totalAmount: 0,
+    appliedPromotions: [],
+    availableOffers: []
+  });
+
   // Load from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
     const savedCustomer = localStorage.getItem('customer');
     const savedOrderId = localStorage.getItem('orderId');
     const savedCoupon = localStorage.getItem('coupon');
+    const savedAutoApply = localStorage.getItem('autoApply');
     
     if (savedCart) {
       try {
@@ -45,6 +58,10 @@ export const CartProvider = ({ children }) => {
       } catch (e) {
         console.error('Failed to parse coupon:', e);
       }
+    }
+
+    if (savedAutoApply !== null) {
+      setAutoApply(savedAutoApply === 'true');
     }
     
     setIsHydrated(true);
@@ -86,6 +103,68 @@ export const CartProvider = ({ children }) => {
       }
     }
   }, [coupon, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem('autoApply', autoApply ? 'true' : 'false');
+    }
+  }, [autoApply, isHydrated]);
+
+  // Evaluate promotions with backend API
+  const fetchEvaluation = async () => {
+    if (cart.length === 0) {
+      setEvaluatedData({
+        items: [],
+        subtotal: 0,
+        discountAmount: 0,
+        taxAmount: 0,
+        totalAmount: 0,
+        appliedPromotions: [],
+        availableOffers: []
+      });
+      return;
+    }
+
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
+      const token = localStorage.getItem('token');
+      
+      const payload = {
+        items: cart.map(item => ({
+          productId: item.id,
+          quantity: item.quantity,
+          variantId: item.variantId || null,
+          notes: item.notes || null
+        })),
+        couponCode: coupon ? coupon.code : null,
+        customer: customer || null,
+        autoApply,
+        appliedManualPromotions
+      };
+
+      const response = await fetch(`${API_URL}/promotions/evaluate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setEvaluatedData(data);
+      }
+    } catch (error) {
+      console.error("Failed to evaluate promotions:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isHydrated) {
+      fetchEvaluation();
+    }
+  }, [cart, coupon, customer, autoApply, appliedManualPromotions, isHydrated]);
 
   const addItem = (product, variant = null) => {
     setCart((prevCart) => {
@@ -151,7 +230,7 @@ export const CartProvider = ({ children }) => {
       setCoupon({
         code: order.discountCode,
         discount: Number(order.discountAmount),
-        type: 'PERCENTAGE' // The exact calculation will be managed by total or loaded
+        type: 'PERCENTAGE' // Evaluator handles precise totals
       });
     } else {
       setCoupon(null);
@@ -168,11 +247,25 @@ export const CartProvider = ({ children }) => {
         variantName: item.variantName,
         quantity: item.quantity,
         notes: item.notes || '',
-        tax: 0 // Will load or compute from product if needed, or default
+        tax: 0
       };
     });
 
     setCart(loadedCart);
+    
+    // Extract applied manual promotion ids if recorded
+    if (order.appliedPromotions) {
+      try {
+        const list = typeof order.appliedPromotions === 'string'
+          ? JSON.parse(order.appliedPromotions)
+          : order.appliedPromotions;
+        if (Array.isArray(list)) {
+          setAppliedManualPromotions(list.map(p => p.promotionId).filter(Boolean));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
   const clearCart = () => {
@@ -180,10 +273,22 @@ export const CartProvider = ({ children }) => {
     setCustomer(null);
     setOrderId(null);
     setCoupon(null);
+    setAppliedManualPromotions([]);
     localStorage.removeItem('cart');
     localStorage.removeItem('customer');
     localStorage.removeItem('orderId');
     localStorage.removeItem('coupon');
+  };
+
+  const applyManualPromotion = (id) => {
+    setAppliedManualPromotions(prev => {
+      if (prev.includes(id)) return prev;
+      return [...prev, id];
+    });
+  };
+
+  const clearManualPromotions = () => {
+    setAppliedManualPromotions([]);
   };
 
   return (
@@ -200,7 +305,15 @@ export const CartProvider = ({ children }) => {
       clearCart,
       setCustomer,
       setCoupon,
-      setOrderId
+      setOrderId,
+      // Promotions Engine Context
+      autoApply,
+      setAutoApply,
+      appliedManualPromotions,
+      evaluatedData,
+      applyManualPromotion,
+      clearManualPromotions,
+      fetchEvaluation
     }}>
       {children}
     </CartContext.Provider>

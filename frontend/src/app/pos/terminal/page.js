@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, ShoppingCart, RefreshCw, Power, Coffee, User, Plus } from "lucide-react";
+import { Search, ShoppingCart, RefreshCw, Power, Coffee, User, Plus, Tag, Gift } from "lucide-react";
 import CustomerModal from "@/components/pos/CustomerModal";
 import CloseSessionModal from "@/components/pos/CloseSessionModal";
 import CoffeeLoader from "@/components/ui/CoffeeLoader";
@@ -10,19 +10,34 @@ import CartSidebar from "@/components/pos/cart-sidebar";
 import { usePopup } from "@/context/PopupContext";
 
 export default function POSTerminalPage() {
-  const { showAlert } = usePopup();
+  const { showAlert, showToast } = usePopup();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const { cart, addItem, customer, setCustomer, orderId } = useCartStore();
+  const { 
+    cart, 
+    addItem, 
+    customer, 
+    setCustomer, 
+    orderId,
+    // Promotions states/functions
+    autoApply,
+    setAutoApply,
+    evaluatedData,
+    applyManualPromotion
+  } = useCartStore();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [session, setSession] = useState(null);
   const [selectedTable, setSelectedTable] = useState(null);
   const [showCloseSessionModal, setShowCloseSessionModal] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+
+  const [activePromotions, setActivePromotions] = useState([]);
+  const [activeOfferPopup, setActiveOfferPopup] = useState(null);
+  const [dismissedOffers, setDismissedOffers] = useState([]);
 
   const formatErrorMessage = (err) => {
     if (!err) return "An unknown error occurred.";
@@ -36,6 +51,22 @@ export default function POSTerminalPage() {
     }
     if (err.message) return err.message;
     return JSON.stringify(err);
+  };
+
+  const fetchActivePromotions = async () => {
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/promotions/active`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setActivePromotions(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch active promotions:", error);
+    }
   };
 
   useEffect(() => {
@@ -52,7 +83,72 @@ export default function POSTerminalPage() {
     }
 
     fetchProducts();
+    fetchActivePromotions();
   }, []);
+
+  // Available offers popup trigger (real time WOW feature)
+  useEffect(() => {
+    if (evaluatedData && evaluatedData.availableOffers && evaluatedData.availableOffers.length > 0) {
+      const firstNewOffer = evaluatedData.availableOffers.find(
+        offer => !dismissedOffers.includes(offer.promotionId)
+      );
+      if (firstNewOffer) {
+        setActiveOfferPopup(firstNewOffer);
+      } else {
+        setActiveOfferPopup(null);
+      }
+    } else {
+      setActiveOfferPopup(null);
+    }
+  }, [evaluatedData?.availableOffers, dismissedOffers]);
+
+  const handleApplyOffer = (promoId) => {
+    applyManualPromotion(promoId);
+    if (showToast) showToast("Offer applied successfully!", "success");
+    setActiveOfferPopup(null);
+  };
+
+  const getProductBadge = (productId) => {
+    const promo = activePromotions.find(p => {
+      if (p.type === 'PRODUCT_DISCOUNT') {
+        return p.products.some(pp => pp.productId === productId && pp.role === 'DISCOUNTED');
+      }
+      if (p.type === 'BUY_X_GET_Y') {
+        return p.conditions.some(pc => pc.triggerProductId === productId);
+      }
+      if (p.type === 'COMBO') {
+        return p.products.some(pp => pp.productId === productId && pp.role === 'COMBO_ITEM');
+      }
+      return false;
+    });
+
+    if (!promo) return null;
+
+    if (promo.type === 'PRODUCT_DISCOUNT') {
+      const reward = promo.rewards[0];
+      if (reward) {
+        return reward.discountType === 'PERCENTAGE' 
+          ? `${Number(reward.discountValue)}% OFF` 
+          : `₹${Number(reward.discountValue)} OFF`;
+      }
+    }
+    if (promo.type === 'BUY_X_GET_Y') {
+      const cond = promo.conditions[0];
+      const reward = promo.rewards[0];
+      if (cond && reward) {
+        if (reward.rewardProductId === cond.triggerProductId) {
+          return `Buy ${cond.triggerQuantity} Get ${reward.rewardQuantity}`;
+        } else {
+          const rProd = products.find(p => p.id === reward.rewardProductId);
+          return `Free ${rProd ? rProd.name : 'Drink'}`;
+        }
+      }
+    }
+    if (promo.type === 'COMBO') {
+      return 'Combo Offer';
+    }
+    return null;
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -164,6 +260,20 @@ export default function POSTerminalPage() {
               </div>
 
               <div className="flex items-center gap-3">
+                {/* Auto Apply Toggle */}
+                <button
+                  onClick={() => setAutoApply(!autoApply)}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border ${
+                    autoApply 
+                      ? 'bg-[#E8F5E9] text-[#1A4D2E] border-[#4ADE80]/30 shadow-sm' 
+                      : 'bg-gray-50 text-gray-400 border-gray-200'
+                  }`}
+                  title="Toggle automatic BOGO item additions"
+                >
+                  <Gift className="h-3.5 w-3.5" />
+                  Auto Apply: {autoApply ? 'ON' : 'OFF'}
+                </button>
+
                 <button
                   onClick={() => window.location.href = '/pos/cart'}
                   className="px-6 py-3 bg-[#1A4D2E] text-white rounded-[2rem] font-bold hover:bg-[#143d24] transition-all shadow-lg hover:shadow-xl flex items-center gap-2 text-sm"
@@ -172,7 +282,7 @@ export default function POSTerminalPage() {
                   View Cart
                 </button>
                 <button
-                  onClick={() => fetchProducts()}
+                  onClick={() => { fetchProducts(); fetchActivePromotions(); }}
                   className="p-2 hover:bg-[#FBFBF2] rounded-xl text-[#5F6F65] transition-colors"
                 >
                   <RefreshCw className="h-5 w-5" />
@@ -237,6 +347,12 @@ export default function POSTerminalPage() {
 
                       {/* Image */}
                       <div className="relative h-32 overflow-hidden bg-gray-50">
+                        {getProductBadge(product.id) && (
+                          <div className="absolute top-2 left-2 z-10 px-2.5 py-1 rounded-lg bg-[#3E2B21] text-[#FDFCF7] text-[10px] font-black tracking-wider uppercase shadow-md flex items-center gap-1">
+                            <Tag className="h-3 w-3" />
+                            {getProductBadge(product.id)}
+                          </div>
+                        )}
                         <img
                           src={getProductImageUrl(product)}
                           alt={product.name}
@@ -334,6 +450,46 @@ export default function POSTerminalPage() {
             }
           }}
         />
+      )}
+
+      {/* Real-time Offer Available Popup (WOW Feature) */}
+      {activeOfferPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-[2rem] w-full max-w-md shadow-[0_20px_60px_rgba(62,43,33,0.25)] border border-[#EBE4D5] overflow-hidden transform transition-all scale-100 animate-in fade-in zoom-in duration-300">
+            {/* Header banner */}
+            <div className="p-6 bg-gradient-to-br from-[#FDFCF7] to-[#F5EFE6] border-b border-[#EBE4D5] text-center relative">
+              <span className="text-4xl">🎉</span>
+              <h3 className="text-xl font-black text-[#3E2B21] mt-2 font-serif">Offer Available</h3>
+              <p className="text-xs text-[#3E2B21]/60 font-medium">Add matching item or apply discount now!</p>
+            </div>
+            
+            <div className="p-8 text-center space-y-6">
+              <div className="px-4 py-5 bg-[#FDFCF7] rounded-2xl border border-[#EBE4D5] shadow-inner">
+                <p className="text-lg font-black text-[#3E2B21] tracking-wide font-mono">
+                  {activeOfferPopup.message}
+                </p>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => handleApplyOffer(activeOfferPopup.promotionId)}
+                  className="flex-1 py-3.5 rounded-[1.2rem] bg-[#1A4D2E] text-white font-bold text-sm hover:bg-[#143d24] transition-colors shadow-md"
+                >
+                  Apply Offer
+                </button>
+                <button
+                  onClick={() => {
+                    setDismissedOffers(prev => [...prev, activeOfferPopup.promotionId]);
+                    setActiveOfferPopup(null);
+                  }}
+                  className="flex-1 py-3.5 rounded-[1.2rem] border border-[#3E2B21]/20 text-[#3E2B21]/60 font-bold text-sm hover:bg-gray-50 transition-colors"
+                >
+                  No, Thanks
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
